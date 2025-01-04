@@ -1,0 +1,31 @@
+from .. import db
+from ..user.models import User
+#from werkzeug.security import generate_password_hash, check_password_hash
+#from .. import login
+#from flask_login import UserMixin
+#from ..models import Todo
+
+#from SmartPlantCare import db
+from datetime import datetime
+
+class Crop(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), nullable=True)
+    plot = db.Column(db.Text(), nullable=True)
+    rating = db.Column(db.Integer, nullable=True)
+    release_year = db.Column(db.Integer, nullable=True)
+    date_created = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
+    name = db.Column(db.String(50), nullable=False)
+    location = db.Column(db.String(50), nullable=False)
+    location_longitude = db.Column(db.String(50), nullable=False)
+    location_latitude = db.Column(db.String(50), nullable=False)
+    prefecture = db.Column(db.Integer, nullable=False, default=1)
+    area = db.Column(db.Integer, nullable=False, default=1)
+    crop_area = db.Column(db.Float, nullable=False)
+    crop_type = db.Column(db.Integer, nullable=False, default=1)
+    soil_type = db.Column(db.Integer, nullable=False, default=1)
+    image = db.Column(db.String(40), nullable=True, default='default_crop_image.png')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f"{self.id}:{self.name}:{self.crop_area}"

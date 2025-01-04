@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{_('Error 404 Not Found')}}
+{% endblock title %}
+
+{% block content %}
+
+<div class="error_message">
+  {{_('ERROR 404! The page you requested could not be found!')}}
+</div>
+
+<div class="error_image_container">
+   <img class="error_image" width="1280" src="{{ url_for('static', filename='images/errors/404.png') }}">
+</div>
+{% endblock %}
