@@ -2,12 +2,11 @@
 
 
 {% block title %}
-    {{ crop.title }}
+    {{ crop.name }} - Smart Plant Care
 {% endblock title %}
 
 
 {% block content %}
-
 
   <main role="main" class="container">
 
@@ -15,13 +14,13 @@
       <div class="row my-3 p-3 bg-body rounded shadow-sm">
     		<div class="col col-md-12">
           {% if crop.image and crop.image != 'default_crop_image.png' %}
-            <img src="{{ url_for('static', filename='images/crops_images/'+crop.image) }}" alt="{{ crop.title }}" title="{{ crop.title }}" class="img-responsive mx-auto d-block a_image">
+            <img src="{{ url_for('static', filename='images/crops_images/'+crop.image) }}" alt="{{ crop.name }}" title="{{ crop.name }}" class="img-responsive mx-auto d-block a_image">
           {% endif %}
     		</div>
     		<div class="col col-md-12">
           
     			<p class="main-crop-title">
-            {{ crop.title }} ({{ crop.release_year }}) [{{ crop.rating / 10 }}]
+            {{ crop.name | safe }} ({{ crop.area | safe }}) [{{ crop.crop_area | safe }}]
           </p>
           <small class="crop_date">[{{ crop.date_created.strftime('%d-%m-%Y')}}]</small>
           <div>
@@ -34,7 +33,7 @@
 
 
           <div class="main-crop-full-text">
-            {{ crop.plot | safe }}
+            {{ crop.location | safe }}
           </div>
 
     			<p class="">By 
@@ -47,18 +46,18 @@
           </p>
           
     		</div>
+
+      {% if map_html %}
+        <div id="map">
+            {{ map_html|safe }}
+        </div>
+      {% endif %}
+
     	</div>
     {% else %}
       <div class="alert alert-info alert-dismissible fade show" role="alert">{{_('No crop found')}}</div>
     {% endif %}
-
-
-
   </main>
-
-
-
-
 
   <!-- Modal -->
   <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">

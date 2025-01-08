@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {{_('Home Page')}}
+    {{_('Crops')}} - Smart Plant Care
 {% endblock title %}
 
 {% block content %}
@@ -25,11 +25,11 @@
             </div>
             <div class="col col-md-12">
               <div class="main-crop-title">
-                <a class="crop_title" href="{{ url_for('crop.showCrop', crop_id=crop.id) }}">{{ crop.title | safe }} ({{ crop.release_year }}) [{{ crop.rating / 10 }}]</a>
+                <a class="crop_title" href="{{ url_for('crop.showCrop', crop_id=crop.id) }}">{{ crop.name | safe }} ({{ crop.area | safe }}) [{{ crop.crop_area | safe }}]</a>
               </div>
               <small class="crop_date">[{{ crop.date_created.strftime('%d-%m-%Y') }}]</small>
               <p class="main-crop-partial-text">
-                {{ crop.plot | truncate(255) | safe }}
+                {{ crop.location | safe }}
               </p>
               <p class="">Από 
                 <span>

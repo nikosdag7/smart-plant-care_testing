@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-  {{ page_title }}
+  {{ page_title }} - Smart Plant Care
 {% endblock %}
 
 {% block content%}
@@ -13,57 +13,109 @@
         <form method="POST" enctype="multipart/form-data">
           {{ form.hidden_tag() }}
 
-        <div class="mb-3">
-          {{ form.title.label(class="form-label") }}
-          {{ form.title(class="form-control", required=False) }}
-          <div id="crop_titleHelp" class="form-text">{{_('Please enter the title of the crop.')}}</div>
-          {% if form.title.errors %}
-            <ul class=errors>
-            {% for error in form.title.errors %}
-              <li class="alert text-danger">{{ error }}</li>
-            {% endfor %}
-            </ul>
-          {% endif %}
-        </div>
+          <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", required=False) }}
+            <div id="crop_nameHelp" class="form-text">{{_('Please enter the name of the crop.')}}</div>
+            {% if form.name.errors %}
+              <ul class=errors>
+              {% for error in form.name.errors %}
+                <li class="alert text-danger">{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
 
-        <div class="mb-3">
-          {{ form.plot.label(class="form-label") }}
-          {{ form.plot(class="form-control", rows="5", required=False) }}
-          <div id="crop_plotHelp" class="form-text">{{_("Please type the text of the crop's plot.")}}</div>
-          {% if form.plot.errors %}
-            <ul class=errors>
-            {% for error in form.plot.errors %}
-              <li class="alert text-danger">{{ error }}</li>
-            {% endfor %}
-            </ul>
-          {% endif %}
-        </div>
+          <div class="mb-3">
+            {{ form.location.label(class="form-label") }}
+            {{ form.location(class="form-control", required=False) }}
+            <div id="crop_locationHelp" class="form-text">{{_('Please enter the location of the crop.')}}</div>
+            {% if form.location.errors %}
+              <ul class=errors>
+              {% for error in form.location.errors %}
+                <li class="alert text-danger">{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
 
-        <div class="mb-3">
-          {{ form.release_year.label(class="form-label") }}
-          {{ form.release_year(class="form-control", rows="5", required=False) }}
-          <div id="crop_release_yearHelp" class="form-text">{{_('Please type the year of the first projection of the crop.')}}</div>
-          {% if form.release_year.errors %}
-            <ul class=errors>
-            {% for error in form.release_year.errors %}
-              <li class="alert text-danger">{{ error }}</li>
-            {% endfor %}
-            </ul>
-          {% endif %}
-        </div>
+          <div class="mb-3">
+            {{ form.prefecture.label(class="form-label") }}
+            {{ form.prefecture(class="form-control", required=False) }}
+            <div id="crop_prefectureHelp" class="form-text">{{_('Please enter the prefecture of the crop.')}}</div>
+            {% if form.prefecture.errors %}
+              <ul class=errors>
+              {% for error in form.prefecture.errors %}
+                <li class="alert text-danger">{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
 
-        <div class="mb-3">
-          {{ form.rating.label(class="form-label") }}
-          {{ form.rating(class="form-control", rows="5", required=False) }}
-          <div id="crop_ratingHelp" class="form-text">{{_('Please enter the rating of the crop (from 1 to 100)')}}</div>
-          {% if form.rating.errors %}
-            <ul class=errors>
-            {% for error in form.rating.errors %}
-              <li class="alert text-danger">{{ error }}</li>
-            {% endfor %}
-            </ul>
-          {% endif %}
-        </div>
+          <div class="mb-3">
+            {{ form.area.label(class="form-label") }}
+            {{ form.area(class="form-control", required=False) }}
+            <div id="crop_areaHelp" class="form-text">{{_('Please enter the area of the crop.')}}</div>
+            {% if form.area.errors %}
+              <ul class=errors>
+              {% for error in form.area.errors %}
+                <li class="alert text-danger">{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.crop_area.label(class="form-label") }}
+            {{ form.crop_area(class="form-control", required=False) }}
+            <div id="crop_cropAreaHelp" class="form-text">{{_('Please enter the size of the crop.')}}</div>
+            {% if form.crop_area.errors %}
+              <ul class=errors>
+              {% for error in form.crop_area.errors %}
+                <li class="alert text-danger">{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.crop_type.label(class="form-label") }}
+            {{ form.crop_type(class="form-control", required=False) }}
+            <div id="crop_cropTypeHelp" class="form-text">{{_('Please enter the type of the crop.')}}</div>
+            {% if form.crop_type.errors %}
+              <ul class=errors>
+              {% for error in form.crop_type.errors %}
+                <li class="alert text-danger">{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.soil_type.label(class="form-label") }}
+            {{ form.soil_type(class="form-control", required=False) }}
+            <div id="crop_soilTypeTypeHelp" class="form-text">{{_('Please enter the type of the crop.')}}</div>
+            {% if form.soil_type.errors %}
+              <ul class=errors>
+              {% for error in form.soil_type.errors %}
+                <li class="alert text-danger">{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.crop_map.label(class="form-label") }}
+            {{ form.crop_map(class="form-control", required=False) }}
+            <div id="cropMapHelp" class="form-text">{{_('Please enter the coordinates of the crop.')}}</div>
+            {% if form.crop_map.errors %}
+              <ul class=errors>
+              {% for error in form.crop_map.errors %}
+                <li class="alert text-danger">{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
 
         <div class="mb-3">
           {{ form.image.label(class="form-label") }}
