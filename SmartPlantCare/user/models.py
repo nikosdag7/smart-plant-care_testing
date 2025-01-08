@@ -9,7 +9,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True, nullable=False)
     profile_image = db.Column(db.String(30), nullable=False, default='default_profile_image.png')
     password = db.Column(db.String(15), nullable=False)
-    crops = db.relationship('Crop', backref='author', lazy=True)
+    crops = db.relationship('Crop', backref='owner', lazy=True)
 
     def __repr__(self):
         return f"{self.username}:{self.email}"

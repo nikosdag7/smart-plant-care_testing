@@ -106,9 +106,9 @@ def crops():
 
     if ordering_by==None:
         crops = Crop.query.order_by(Crop.id.asc()).paginate(per_page=5, page=page)
-    elif ordering_by=='rating':
+    elif ordering_by=='name':
         crops = Crop.query.order_by(Crop.name.asc()).paginate(per_page=5, page=page)
-    elif ordering_by=='release_year':
+    elif ordering_by=='crop_area':
         crops = Crop.query.order_by(Crop.crop_area.desc()).paginate(per_page=5, page=page)
     else:
         return render_template('404.html'), 404
@@ -122,10 +122,6 @@ def new_crop():
     form = newCropForm()
       
     if request.method == 'POST' and form.validate_on_submit():
-        title = title='testTitle'
-        plot = 'testPlot'
-        release_year = 1888
-        rating = 99
         name = form.name.data
         location = form.location.data
         prefecture = form.prefecture.data
@@ -140,21 +136,16 @@ def new_crop():
             except:
                 abort(415)
         
-            crop = Crop(title=title,
-                              plot=plot,
-                              author=current_user,
-                              image=image_file,
-                              release_year=release_year,
-                              rating=rating,
-                              name=name,
-                              location=location,
-                              prefecture=prefecture,
-                              area=area,
-                              crop_area=crop_area,
-                              crop_type=crop_type,
-                              soil_type=soil_type)
+            crop = Crop(owner=current_user,
+                        name=name,
+                        location=location,
+                        prefecture=prefecture,
+                        area=area,
+                        crop_area=crop_area,
+                        crop_type=crop_type,
+                        soil_type=soil_type)
         else:
-            crop = Crop(title=title, plot=plot, author=current_user, release_year=release_year, rating=rating,
+            crop = Crop(owner=current_user,
                         name=name,
                         location=location,
                         prefecture=prefecture,
@@ -256,15 +247,15 @@ def my_crops():
     user = User.query.get_or_404(1)
 
     if ordering_by==None:
-        crops = Crop.query.filter_by(author=current_user).order_by(Crop.id.asc()).paginate(per_page=3, page=page)
-    elif ordering_by=='rating':
-        crops = Crop.query.filter_by(author=current_user).order_by(Crop.name.asc()).paginate(per_page=3, page=page)
-    elif ordering_by=='release_year':
-        crops = Crop.query.filter_by(author=current_user).order_by(Crop.crop_area.desc()).paginate(per_page=3, page=page)
+        crops = Crop.query.filter_by(owner=current_user).order_by(Crop.id.asc()).paginate(per_page=3, page=page)
+    elif ordering_by=='name':
+        crops = Crop.query.filter_by(owner=current_user).order_by(Crop.name.asc()).paginate(per_page=3, page=page)
+    elif ordering_by=='crop_area':
+        crops = Crop.query.filter_by(owner=current_user).order_by(Crop.crop_area.desc()).paginate(per_page=3, page=page)
     else:
         return render_template('404.html'), 404
 
-    return render_template("my_crops.html", crops=crops, author=current_user, ordering_by=ordering_by)
+    return render_template("my_crops.html", crops=crops, owner=current_user, ordering_by=ordering_by)
 
 
 @crop.route("/crop/<int:crop_id>", methods=["GET"])
@@ -274,7 +265,7 @@ def showCrop(crop_id):
     name = crop.name
     form = newCropForm()
 
-    #crop = Crop.query.filter_by(author=current_user).order_by(Crop.id.asc()).paginate(per_page=3, page=page)
+    #crop = Crop.query.filter_by(owner=current_user).order_by(Crop.id.asc()).paginate(per_page=3, page=page)
     #coordinates = CropCoordinates.query.filter_by(crop_id=crop.id).order_by(CropCoordinates.id.asc()).get
     crop_coords = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).all()
     
@@ -341,8 +332,8 @@ def showCrop(crop_id):
     return render_template("crop.html", form=form, crop=crop, map_html=crop_map_html)
 
 
-@crop.route("/crops_by_author/<int:author_id>")
-def crops_by_author(author_id):
+@crop.route("/crops_by_owner/<int:owner_id>")
+def crops_by_owner(owner_id):
     
 
     ordering_by = request.args.get('ordering_by')
@@ -350,25 +341,25 @@ def crops_by_author(author_id):
     ## Pagination: page value from 'page' parameter from url
     page = request.args.get('page', 1, type=int)
     
-    user = User.query.get_or_404(author_id)
+    user = User.query.get_or_404(owner_id)
 
     if ordering_by==None:
-        crops = Crop.query.filter_by(author=user).order_by(Crop.id.asc()).paginate(per_page=3, page=page)
-    elif ordering_by=='rating':
-        crops = Crop.query.filter_by(author=user).order_by(Crop.name.asc()).paginate(per_page=3, page=page)
-    elif ordering_by=='release_year':
-        crops = Crop.query.filter_by(author=user).order_by(Crop.crop_area.desc()).paginate(per_page=3, page=page)
+        crops = Crop.query.filter_by(owner=user).order_by(Crop.id.asc()).paginate(per_page=3, page=page)
+    elif ordering_by=='name':
+        crops = Crop.query.filter_by(owner=user).order_by(Crop.name.asc()).paginate(per_page=3, page=page)
+    elif ordering_by=='crop_area':
+        crops = Crop.query.filter_by(owner=user).order_by(Crop.crop_area.desc()).paginate(per_page=3, page=page)
     else:
         return render_template('404.html'), 404
 
-    return render_template("crops_by_author.html", crops=crops, author=user, ordering_by=ordering_by)
+    return render_template("crops_by_owner.html", crops=crops, owner=user, ordering_by=ordering_by)
 
 
 @crop.route("/edit_crop/<int:crop_id>", methods=['GET', 'POST'])
 @login_required
 def edit_crop(crop_id):
 
-    crop = Crop.query.filter_by(id=crop_id, author=current_user).first_or_404()
+    crop = Crop.query.filter_by(id=crop_id, owner=current_user).first_or_404()
 
 
     form = newCropForm(
@@ -447,7 +438,7 @@ def edit_crop(crop_id):
 @login_required
 def delete_crop(crop_id):
 
-    crop = Crop.query.filter_by(id=crop_id, author=current_user).first_or_404()
+    crop = Crop.query.filter_by(id=crop_id, owner=current_user).first_or_404()
 
     if crop:
 

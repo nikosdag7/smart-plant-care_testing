@@ -122,7 +122,7 @@ msgstr "Διαγραφή"
 
 #: SmartPlantCare/crop/templates/crop.html:56
 #: SmartPlantCare/crop/templates/crops.html:98
-#: SmartPlantCare/crop/templates/crops_by_author.html:101
+#: SmartPlantCare/crop/templates/crops_by_owner.html:101
 #: SmartPlantCare/crop/templates/my_crops.html:94
 msgid "No crop found"
 msgstr "Δε βρέθηκε καμμία καλλιέργεια"
@@ -146,22 +146,22 @@ msgid "Crops from all users"
 msgstr "Καλλιέργειες από όλους τους χρήστες"
 
 #: SmartPlantCare/crop/templates/crops.html:15
-#: SmartPlantCare/crop/templates/crops_by_author.html:17
+#: SmartPlantCare/crop/templates/crops_by_owner.html:17
 #: SmartPlantCare/crop/templates/my_crops.html:14
 msgid "Sorting by rating"
 msgstr "Ταξινόμηση βάσει βαθμολογίας"
 
 #: SmartPlantCare/crop/templates/crops.html:16
-#: SmartPlantCare/crop/templates/crops_by_author.html:18
+#: SmartPlantCare/crop/templates/crops_by_owner.html:18
 #: SmartPlantCare/crop/templates/my_crops.html:15
 msgid "Sorting by year of projection"
 msgstr "Ταξινόμηση βάσει έτους προβολής"
 
-#: SmartPlantCare/crop/templates/crops_by_author.html:4
+#: SmartPlantCare/crop/templates/crops_by_owner.html:4
 msgid "Crops of the"
 msgstr "Καλλιέργειες του"
 
-#: SmartPlantCare/crop/templates/crops_by_author.html:9
+#: SmartPlantCare/crop/templates/crops_by_owner.html:9
 msgid "Crops by user "
 msgstr "Καλλιέργειες απο το χρήστη"
 

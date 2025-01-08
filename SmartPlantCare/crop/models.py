@@ -6,15 +6,10 @@ from ..user.models import User
 #from ..models import Todo
 
 #from SmartPlantCare import db
-from datetime import datetime
+#from datetime import datetime
 
 class Crop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50), nullable=True)
-    plot = db.Column(db.Text(), nullable=True)
-    rating = db.Column(db.Integer, nullable=True)
-    release_year = db.Column(db.Integer, nullable=True)
-    date_created = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
     name = db.Column(db.String(50), nullable=False)
     location = db.Column(db.String(50), nullable=True)
     prefecture = db.Column(db.Integer, nullable=False, default=1)

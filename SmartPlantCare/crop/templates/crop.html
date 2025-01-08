@@ -20,12 +20,12 @@
     		<div class="col col-md-12">
           
     			<p class="main-crop-title">
-            {{ crop.name | safe }} ({{ crop.area | safe }}) [{{ crop.crop_area | safe }}]
+            {{ crop.name | safe }} ({{ crop.location | safe }}) [{{ crop.crop_area | safe }}]
           </p>
-          <small class="crop_date">[{{ crop.date_created.strftime('%d-%m-%Y')}}]</small>
+          <small class="crop_prefecture">[{{ crop.prefecture | safe }}]</small>
           <div>
 
-            {% if crop.author == current_user %}
+            {% if crop.owner == current_user %}
               <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('crop.edit_crop', crop_id=crop.id) }}">{{_('Edit')}}</a>
               <button type="button" class="btn btn-danger btn-sm m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">{{_('Delete')}}</button>
             {% endif %}
@@ -33,14 +33,14 @@
 
 
           <div class="main-crop-full-text">
-            {{ crop.location | safe }}
+            {{ crop.area | safe }}
           </div>
 
-    			<p class="">By 
+    			<p class="">{{_('By')}}
             <span>
-              <a class="owner-name" href="{{ url_for('crop.crops_by_author', author_id=crop.author.id) }}">
-                {{ crop.author.username }}
-                <img class="rounded-circle navbar-profile-image" alt="{{ current_user.username }}" src="{{ url_for('static', filename='images/profiles_images/'+crop.author.profile_image) }}" data-holder-rendered="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ crop.author.username }}">
+              <a class="owner-name" href="{{ url_for('crop.crops_by_owner', owner_id=crop.owner.id) }}">
+                {{ crop.owner.username }}
+                <img class="rounded-circle navbar-profile-image" alt="{{ current_user.username }}" src="{{ url_for('static', filename='images/profiles_images/'+crop.owner.profile_image) }}" data-holder-rendered="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ crop.owner.username }}">
               </a>
             </span>
           </p>
