@@ -20,22 +20,23 @@
     		<div class="col col-md-12">
           
     			<p class="main-crop-title">
-            {{ crop.name | safe }} ({{ crop.location | safe }}) [{{ crop.crop_area | safe }}]
+            {{ crop.name | safe }}
           </p>
-          <small class="crop_prefecture">[{{ crop.prefecture | safe }}]</small>
+    			<p class="main-crop-full-text">
+            {{_('Location')}}: {{ crop.location | safe }}, {{_('Size')}}: [ {{ crop.crop_size | safe }} ]
+          </p>
+    			<p class="main-crop-data">
+            {{_('Νομός')}}: {{ prefecture.name | safe }}, {{_('Area')}}: {{ area.name | safe }}
+          </p>
+    			<p class="main-crop-data">
+            {{_('Crop type')}}: {{ crop_type.name | safe }}, {{_('Soil type')}}: {{ soil_type.name | safe }}
+          </p>
           <div>
-
             {% if crop.owner == current_user %}
               <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('crop.edit_crop', crop_id=crop.id) }}">{{_('Edit')}}</a>
               <button type="button" class="btn btn-danger btn-sm m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">{{_('Delete')}}</button>
             {% endif %}
           </div>
-
-
-          <div class="main-crop-full-text">
-            {{ crop.area | safe }}
-          </div>
-
     			<p class="">{{_('By')}}
             <span>
               <a class="owner-name" href="{{ url_for('crop.crops_by_owner', owner_id=crop.owner.id) }}">

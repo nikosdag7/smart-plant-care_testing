@@ -13,6 +13,12 @@ body {
 	color:  black;
 }
 
+.main-crop-data{
+	font-size: 1em;
+	text-decoration: none;
+	color:  black;
+}
+
 .crop_prefecture,.crop_prefecture:hover{
 	font-size: 1em;
 	color:  black;

@@ -34,17 +34,18 @@ class newCropForm(FlaskForm):
     location = StringField(label=_('Crop Location'),
                            validators=[Length(min=3, max=50, message=_('This field must be between {min} and {max} characters').format(min=3,max=50))])
 
-    # prefecture - StringField, Length(3-50)
-    prefecture = StringField(label=_('Crop Prefecture'),
-                           validators=[Length(min=3, max=50, message=_('This field must be between {min} and {max} characters').format(min=3,max=50))])
+    # prefecture - IntegerField, DataRequired, NumberRange(1-99)
+    prefecture = IntegerField(label=_('Crop Prefecture'),
+                           validators=[DataRequired(message=_('This field cannot be empty.')),
+                                       NumberRange(min=1, max=99, message=_('This field takes values from 1 to 99'))])
 
     # area - IntegerField, DataRequired, NumberRange (1-99)
     area = IntegerField(label=_('The area of the crop'),
                            validators=[DataRequired(message=_('This field cannot be empty.')),
                                        NumberRange(min=1, max=99, message=_('This field takes values from 1 to 99'))])
  
-    # crop_area - FloatField, DataRequired, NumberRange (1-99)
-    crop_area = FloatField(label=_('The size of the crop'),
+    # crop_size - FloatField, DataRequired, NumberRange (1-99)
+    crop_size = FloatField(label=_('The size of the crop'),
                            validators=[DataRequired(message=_('This field cannot be empty.')),
                                        NumberRange(min=1, max=1000, message=_('This field takes values from 1 to 1000'))])
 

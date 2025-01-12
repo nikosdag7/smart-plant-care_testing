@@ -6,7 +6,7 @@ from . import crop
 #from .forms import RegistrationForm, LoginForm
 #from SmartPlantCare.forms import NewCropForm
 from .forms.newCropForm import newCropForm
-from .models import Crop, CropCoordinates
+from .models import Prefecture, Area, CropType, SoilType, Crop, CropCoordinates
 from ..user.models import User
 from .. import db
 #from werkzeug.urls import url_parse
@@ -108,28 +108,37 @@ def crops():
         crops = Crop.query.order_by(Crop.id.asc()).paginate(per_page=5, page=page)
     elif ordering_by=='name':
         crops = Crop.query.order_by(Crop.name.asc()).paginate(per_page=5, page=page)
-    elif ordering_by=='crop_area':
-        crops = Crop.query.order_by(Crop.crop_area.desc()).paginate(per_page=5, page=page)
+    elif ordering_by=='crop_size':
+        crops = Crop.query.order_by(Crop.crop_size.desc()).paginate(per_page=5, page=page)
     else:
         return render_template('404.html'), 404
-
+    
     return render_template("crops.html", crops=crops, ordering_by=ordering_by)
 
 
 @crop.route("/new_crop/", methods=["GET", "POST"])
 @login_required
 def new_crop():
+    
     form = newCropForm()
-      
+    lang_id = session.get('lang_id')
+    prefectures = Prefecture.query.filter_by(language_id=lang_id).order_by(Prefecture.id.asc())
+    areas = Area.query.filter_by(language_id=lang_id).order_by(Area.id.asc())
+    crop_types = CropType.query.filter_by(language_id=lang_id).order_by(CropType.id.asc())
+    soil_types = SoilType.query.filter_by(language_id=lang_id).order_by(SoilType.id.asc())
+
+    #for soil_type in soil_types:
+    #    print(soil_type.name)
+
     if request.method == 'POST' and form.validate_on_submit():
         name = form.name.data
         location = form.location.data
         prefecture = form.prefecture.data
         area = form.area.data
-        crop_area = form.crop_area.data
+        crop_size = form.crop_size.data
         crop_type = form.crop_type.data
         soil_type = form.soil_type.data
-
+        
         if form.image.data:
             try:
                 image_file = image_save(form.image.data, 'crops_images', (640, 640))
@@ -141,7 +150,7 @@ def new_crop():
                         location=location,
                         prefecture=prefecture,
                         area=area,
-                        crop_area=crop_area,
+                        crop_size=crop_size,
                         crop_type=crop_type,
                         soil_type=soil_type)
         else:
@@ -150,7 +159,7 @@ def new_crop():
                         location=location,
                         prefecture=prefecture,
                         area=area,
-                        crop_area=crop_area,
+                        crop_size=crop_size,
                         crop_type=crop_type,
                         soil_type=soil_type
                         )
@@ -230,9 +239,10 @@ def new_crop():
 
         flash(_('The crop <b>{name}</b> was successfully created').format(name=name), 'success')
         
-        return render_template("crop.html", form=form, crop=crop, page_title=_('Αdd new Crop'), map_html=crop_map_html)
+        #return render_template("crop.html", form=form, crop=crop, page_title=_('Αdd new Crop'), map_html=crop_map_html, prefectures=prefectures, areas=areas, crop_types=crop_types, soil_types=soil_types)
+        return redirect(url_for('crop.showCrop', crop_id=crop.id))
     #return redirect(url_for('crop.crops'))
-    return render_template("new_crop.html", form=form, page_title=_('Αdd new Crop'), current_year=current_year)
+    return render_template("new_crop.html", form=form, page_title=_('Αdd new Crop'), current_year=current_year, prefectures=prefectures, areas=areas, crop_types=crop_types, soil_types=soil_types)
 
 
 ### User crops list ###
@@ -250,8 +260,8 @@ def my_crops():
         crops = Crop.query.filter_by(owner=current_user).order_by(Crop.id.asc()).paginate(per_page=3, page=page)
     elif ordering_by=='name':
         crops = Crop.query.filter_by(owner=current_user).order_by(Crop.name.asc()).paginate(per_page=3, page=page)
-    elif ordering_by=='crop_area':
-        crops = Crop.query.filter_by(owner=current_user).order_by(Crop.crop_area.desc()).paginate(per_page=3, page=page)
+    elif ordering_by=='crop_size':
+        crops = Crop.query.filter_by(owner=current_user).order_by(Crop.crop_size.desc()).paginate(per_page=3, page=page)
     else:
         return render_template('404.html'), 404
 
@@ -263,12 +273,29 @@ def showCrop(crop_id):
 
     crop = Crop.query.get_or_404(crop_id)
     name = crop.name
+    lang_id = session.get('lang_id')
+    prefecture = Prefecture.query.filter_by(id=crop.prefecture, language_id=lang_id).one_or_404()
+    area = Area.query.filter_by(id=crop.area, language_id=lang_id).one_or_404()
+    crop_type = CropType.query.filter_by(id=crop.crop_type, language_id=lang_id).one_or_404()
+    soil_type = SoilType.query.filter_by(id=crop.soil_type, language_id=lang_id).one_or_404()
+    crop_coords = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).all()
     form = newCropForm()
-
+    #print('# 1 #')
+    #print(crop.name)
+    #print(prefecture.name)
+    #print(prefecture.name)
+    #print(prefecture.name)
     #crop = Crop.query.filter_by(owner=current_user).order_by(Crop.id.asc()).paginate(per_page=3, page=page)
     #coordinates = CropCoordinates.query.filter_by(crop_id=crop.id).order_by(CropCoordinates.id.asc()).get
-    crop_coords = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).all()
-    
+    #query = db.session.query(Area).join(Prefecture, Prefecture.id == Area.id).filter_by()
+    #print(query)
+    # Εκτέλεση του query
+    #results = query.all()
+    #print(results)
+    # Εκτύπωση των αποτελεσμάτων
+    #for area, prefecture in results:
+    #    print(f"Area: {area.name}, Prefecture: {prefecture.name}")
+
     crop_map_html = False
     if crop_coords:
         #print('# 1 #')
@@ -329,7 +356,7 @@ def showCrop(crop_id):
             print(str(e))
             flash(_('Error handling Crop Coordinates Data'), 'error')
 
-    return render_template("crop.html", form=form, crop=crop, map_html=crop_map_html)
+    return render_template("crop.html", form=form, crop=crop, map_html=crop_map_html, prefecture=prefecture, area=area, crop_type=crop_type, soil_type=soil_type)
 
 
 @crop.route("/crops_by_owner/<int:owner_id>")
@@ -347,8 +374,8 @@ def crops_by_owner(owner_id):
         crops = Crop.query.filter_by(owner=user).order_by(Crop.id.asc()).paginate(per_page=3, page=page)
     elif ordering_by=='name':
         crops = Crop.query.filter_by(owner=user).order_by(Crop.name.asc()).paginate(per_page=3, page=page)
-    elif ordering_by=='crop_area':
-        crops = Crop.query.filter_by(owner=user).order_by(Crop.crop_area.desc()).paginate(per_page=3, page=page)
+    elif ordering_by=='crop_size':
+        crops = Crop.query.filter_by(owner=user).order_by(Crop.crop_size.desc()).paginate(per_page=3, page=page)
     else:
         return render_template('404.html'), 404
 
@@ -360,14 +387,18 @@ def crops_by_owner(owner_id):
 def edit_crop(crop_id):
 
     crop = Crop.query.filter_by(id=crop_id, owner=current_user).first_or_404()
-
+    lang_id = session.get('lang_id')
+    prefectures = Prefecture.query.filter_by(language_id=lang_id).order_by(Prefecture.id.asc())
+    areas = Area.query.filter_by(language_id=lang_id).order_by(Area.id.asc())
+    crop_types = CropType.query.filter_by(language_id=lang_id).order_by(CropType.id.asc())
+    soil_types = SoilType.query.filter_by(language_id=lang_id).order_by(SoilType.id.asc())
 
     form = newCropForm(
         name = crop.name,
         location = crop.location,
         prefecture = crop.prefecture,
         area = crop.area,
-        crop_area = crop.crop_area,
+        crop_size = crop.crop_size,
         crop_type = crop.crop_type,
         soil_type = crop.soil_type
         )
@@ -377,7 +408,7 @@ def edit_crop(crop_id):
         crop.location = form.location.data
         crop.prefecture = form.prefecture.data
         crop.area = form.area.data
-        crop.crop_area = form.crop_area.data
+        crop.crop_size = form.crop_size.data
         crop.crop_type = form.crop_type.data
         crop.soil_type = form.soil_type.data
 
@@ -431,7 +462,7 @@ def edit_crop(crop_id):
 
         return redirect(url_for('crop.showCrop', crop_id=crop.id))
 
-    return render_template("new_crop.html", form=form, crop=crop, page_title=_('Edit Crop'))
+    return render_template("new_crop.html", form=form, crop=crop, page_title=_('Edit Crop'), prefectures=prefectures, areas=areas, crop_types=crop_types, soil_types=soil_types)
 
 
 @crop.route("/delete_crop/<int:crop_id>", methods=["GET", "POST"])

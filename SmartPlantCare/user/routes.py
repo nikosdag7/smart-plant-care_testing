@@ -13,7 +13,7 @@ from . import user
 from .forms.signupForm import signupForm
 from .forms.loginForm import loginForm
 from .forms.accountUpdateForm import accountUpdateForm
-from .models import User
+from .models import Language, User
 from .. import db, bcrypt
 #from werkzeug.urls import url_parse
 
@@ -25,6 +25,11 @@ from datetime import datetime as dt
 from SmartPlantCare import app
 
 current_year = dt.now().year
+
+### get user language ###
+def get_locale():
+    return session.get('lang', request.accept_languages.best_match(
+            app.config['LANGUAGES']) or app.config['LANGUAGES'][0])
 
 ### Rename and save image file ###
 def image_save(image, where, size):
@@ -111,6 +116,10 @@ def login_page():
         user = User.query.filter_by(email=email).first()
 
         if user and bcrypt.check_password_hash(user.password, password):
+            lang_code = get_locale()
+            db_language = Language.query.filter_by(code=lang_code).one_or_404()
+            session['lang_id'] = db_language.id
+            session['lang'] = db_language.code
             flash(_('The login of the user with email: {email} to our website was successful.').format(email=email), 'success')
             login_user(user, remember=form.remember_me.data)
 
@@ -125,7 +134,8 @@ def login_page():
 ### Logout Page ###
 @user.route("/logout/")
 def logout_page():
-
+    
+    session.clear()
     logout_user()
 
     flash(_('The user has been logged out.'), 'success')
@@ -134,8 +144,13 @@ def logout_page():
 
 @user.route('/set_language/<language>')
 def set_language(language):
-    if language in ['el','en']:
-        session['lang'] = language
-    response = redirect(request.referrer)
-    
-    return response
+
+    db_language = Language.query.filter_by(code=language).first()
+    if db_language:
+        session['lang_id'] = db_language.id
+        session['lang'] = db_language.code
+        response = redirect(request.referrer)
+        
+        return response
+    else:
+        return render_template('404.html'), 404

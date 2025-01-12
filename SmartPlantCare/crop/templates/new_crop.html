@@ -41,7 +41,15 @@
 
           <div class="mb-3">
             {{ form.prefecture.label(class="form-label") }}
-            {{ form.prefecture(class="form-control", required=False) }}
+            <select class="form-select" id="prefecture" name="prefecture">
+              {% for prefecture in prefectures %}
+                {% if crop and prefecture.id == crop.prefecture %}
+                  <option value="{{ prefecture.id }}" selected>{{ prefecture.name | safe }}</option>
+                {% else %}
+                  <option value="{{ prefecture.id }}">{{ prefecture.name | safe }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
             <div id="crop_prefectureHelp" class="form-text">{{_('Please enter the prefecture of the crop.')}}</div>
             {% if form.prefecture.errors %}
               <ul class=errors>
@@ -54,8 +62,16 @@
 
           <div class="mb-3">
             {{ form.area.label(class="form-label") }}
-            {{ form.area(class="form-control", required=False) }}
-            <div id="crop_areaHelp" class="form-text">{{_('Please enter the area of the crop.')}}</div>
+            <select class="form-select" id="area" name="area">
+              {% for area in areas %}
+              {% if crop and area.id == crop.area %}
+              <option value="{{ area.id }}" selected>{{ area.name | safe }}</option>
+              {% else %}
+              <option value="{{ area.id }}">{{ area.name | safe }}</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+            <div id="crop_sizeHelp" class="form-text">{{_('Please enter the area of the crop.')}}</div>
             {% if form.area.errors %}
               <ul class=errors>
               {% for error in form.area.errors %}
@@ -66,21 +82,16 @@
           </div>
 
           <div class="mb-3">
-            {{ form.crop_area.label(class="form-label") }}
-            {{ form.crop_area(class="form-control", required=False) }}
-            <div id="crop_cropAreaHelp" class="form-text">{{_('Please enter the size of the crop.')}}</div>
-            {% if form.crop_area.errors %}
-              <ul class=errors>
-              {% for error in form.crop_area.errors %}
-                <li class="alert text-danger">{{ error }}</li>
-              {% endfor %}
-              </ul>
-            {% endif %}
-          </div>
-
-          <div class="mb-3">
             {{ form.crop_type.label(class="form-label") }}
-            {{ form.crop_type(class="form-control", required=False) }}
+            <select class="form-select" id="crop_type" name="crop_type">
+              {% for crop_type in crop_types %}
+              {% if crop and crop_type.id == crop.crop_type %}
+              <option value="{{ crop_type.id }}" selected>{{ crop_type.name | safe }}</option>
+              {% else %}
+              <option value="{{ crop_type.id }}">{{ crop_type.name | safe }}</option>
+              {% endif %}
+              {% endfor %}
+            </select>
             <div id="crop_cropTypeHelp" class="form-text">{{_('Please enter the type of the crop.')}}</div>
             {% if form.crop_type.errors %}
               <ul class=errors>
@@ -93,11 +104,32 @@
 
           <div class="mb-3">
             {{ form.soil_type.label(class="form-label") }}
-            {{ form.soil_type(class="form-control", required=False) }}
-            <div id="crop_soilTypeTypeHelp" class="form-text">{{_('Please enter the type of the crop.')}}</div>
+            <select class="form-select" id="soil_type" name="soil_type">
+              {% for soil_type in soil_types %}
+              {% if crop and soil_type.id == crop.soil_type %}
+              <option value="{{ soil_type.id }}" selected>{{ soil_type.name | safe }}</option>
+              {% else %}
+              <option value="{{ soil_type.id }}">{{ soil_type.name | safe }}</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+            <div id="crop_soilypeHelp" class="form-text">{{_('Please enter the soil type of the crop.')}}</div>
             {% if form.soil_type.errors %}
               <ul class=errors>
               {% for error in form.soil_type.errors %}
+                <li class="alert text-danger">{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.crop_size.label(class="form-label") }}
+            {{ form.crop_size(class="form-control", required=False) }}
+            <div id="crop_cropAreaHelp" class="form-text">{{_('Please enter the size of the crop.')}}</div>
+            {% if form.crop_size.errors %}
+              <ul class=errors>
+              {% for error in form.crop_size.errors %}
                 <li class="alert text-danger">{{ error }}</li>
               {% endfor %}
               </ul>
