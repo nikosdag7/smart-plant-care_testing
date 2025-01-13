@@ -6,7 +6,7 @@ from . import crop
 #from .forms import RegistrationForm, LoginForm
 #from SmartPlantCare.forms import NewCropForm
 from .forms.newCropForm import newCropForm
-from .models import Prefecture, Area, CropType, SoilType, Crop, CropCoordinates
+from .models import Prefecture,PrefectureName,Area,AreaName,CropType,CropTypeName,SoilType,SoilTypeName,Crop,CropCoordinates
 from ..user.models import User
 from .. import db
 #from werkzeug.urls import url_parse
@@ -122,10 +122,10 @@ def new_crop():
     
     form = newCropForm()
     lang_id = session.get('lang_id')
-    prefectures = Prefecture.query.filter_by(language_id=lang_id).order_by(Prefecture.id.asc())
-    areas = Area.query.filter_by(language_id=lang_id).order_by(Area.id.asc())
-    crop_types = CropType.query.filter_by(language_id=lang_id).order_by(CropType.id.asc())
-    soil_types = SoilType.query.filter_by(language_id=lang_id).order_by(SoilType.id.asc())
+    prefectures = PrefectureName.query.filter_by(language_id=lang_id).order_by(PrefectureName.id.asc())
+    areas = AreaName.query.filter_by(language_id=lang_id).order_by(AreaName.id.asc())
+    crop_types = CropTypeName.query.filter_by(language_id=lang_id).order_by(CropTypeName.id.asc())
+    soil_types = SoilTypeName.query.filter_by(language_id=lang_id).order_by(SoilTypeName.id.asc())
 
     #for soil_type in soil_types:
     #    print(soil_type.name)
@@ -224,8 +224,8 @@ def new_crop():
         # Save coordinates (Map Data) in database
         try:
             for crop_coords in coordinates:
-                print('#%#')
-                print(crop_coords)
+                #print('#%#')
+                #print(crop_coords)
                 lon, lat = crop_coords
                 new_coord = CropCoordinates(crop_id=crop.id, longtitute=lon, latitude=lat)
                 db.session.add(new_coord)
@@ -274,10 +274,10 @@ def showCrop(crop_id):
     crop = Crop.query.get_or_404(crop_id)
     name = crop.name
     lang_id = session.get('lang_id')
-    prefecture = Prefecture.query.filter_by(id=crop.prefecture, language_id=lang_id).one_or_404()
-    area = Area.query.filter_by(id=crop.area, language_id=lang_id).one_or_404()
-    crop_type = CropType.query.filter_by(id=crop.crop_type, language_id=lang_id).one_or_404()
-    soil_type = SoilType.query.filter_by(id=crop.soil_type, language_id=lang_id).one_or_404()
+    prefecture = PrefectureName.query.filter_by(id=crop.prefecture, language_id=lang_id).one_or_404()
+    area = AreaName.query.filter_by(id=crop.area, language_id=lang_id).one_or_404()
+    crop_type = CropTypeName.query.filter_by(id=crop.crop_type, language_id=lang_id).one_or_404()
+    soil_type = SoilTypeName.query.filter_by(id=crop.soil_type, language_id=lang_id).one_or_404()
     crop_coords = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).all()
     form = newCropForm()
     #print('# 1 #')
@@ -388,10 +388,10 @@ def edit_crop(crop_id):
 
     crop = Crop.query.filter_by(id=crop_id, owner=current_user).first_or_404()
     lang_id = session.get('lang_id')
-    prefectures = Prefecture.query.filter_by(language_id=lang_id).order_by(Prefecture.id.asc())
-    areas = Area.query.filter_by(language_id=lang_id).order_by(Area.id.asc())
-    crop_types = CropType.query.filter_by(language_id=lang_id).order_by(CropType.id.asc())
-    soil_types = SoilType.query.filter_by(language_id=lang_id).order_by(SoilType.id.asc())
+    prefectures = PrefectureName.query.filter_by(language_id=lang_id).order_by(PrefectureName.id.asc())
+    areas = AreaName.query.filter_by(language_id=lang_id).order_by(AreaName.id.asc())
+    crop_types = CropTypeName.query.filter_by(language_id=lang_id).order_by(CropTypeName.id.asc())
+    soil_types = SoilTypeName.query.filter_by(language_id=lang_id).order_by(SoilTypeName.id.asc())
 
     form = newCropForm(
         name = crop.name,
