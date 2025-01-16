@@ -48,6 +48,7 @@ class Area(db.Model):
 
 class AreaName(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    prefecture_id = db.Column(db.Integer, db.ForeignKey('prefecture.id'), nullable=False)
     area_id = db.Column(db.Integer, db.ForeignKey('area.id'), nullable=False) 
     language_id = db.Column(db.Integer, db.ForeignKey('language.id'), nullable=False)
     name = db.Column(db.String(200), nullable=False)

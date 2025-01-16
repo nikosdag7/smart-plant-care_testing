@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, session, abort
+from flask import render_template, flash, redirect, url_for, request, session, abort, jsonify
 from flask_login import login_user, logout_user, login_required, \
     current_user
 from flask_babel import _
@@ -21,7 +21,7 @@ from datetime import datetime as dt
 
 import folium
 import json
-import jsonify
+#import jsonify
 from scipy.spatial import ConvexHull
 
 current_year = dt.now().year
@@ -96,7 +96,27 @@ def image_save(image, where, size):
     return image_filename
 
 
+@crop.route('/get_prefectures')
+@login_required
+def get_prefectures():
+    lang_id = session.get('lang_id')
+    prefectures = PrefectureName.query.filter_by(language_id=lang_id).order_by(PrefectureName.id.asc()).all()
+    #print(prefectures)
+    #return render_template("index.html", prefectures=prefectures)
+    return jsonify({"prefectures": [{"id": p.prefecture_id, "name": p.name} for p in prefectures]})
+
+@crop.route('/get_areas/<int:prefecture_id>', methods=['GET'])
+@login_required
+def get_areas(prefecture_id):
+    lang_id = session.get('lang_id')
+    areas = AreaName.query.filter_by(prefecture_id=prefecture_id,language_id=lang_id).order_by(AreaName.id.asc()).all()
+    #print(areas)
+    #return render_template("index.html", areas=areas)
+    return jsonify({"areas": [{"id": a.area_id, "name": a.name} for a in areas]})
+
+
 @crop.route("/crops/")
+@login_required
 def crops():
 
     ordering_by = request.args.get('ordering_by')
@@ -122,8 +142,8 @@ def new_crop():
     
     form = newCropForm()
     lang_id = session.get('lang_id')
-    prefectures = PrefectureName.query.filter_by(language_id=lang_id).order_by(PrefectureName.id.asc())
-    areas = AreaName.query.filter_by(language_id=lang_id).order_by(AreaName.id.asc())
+    #prefectures = PrefectureName.query.filter_by(language_id=lang_id).order_by(PrefectureName.id.asc())
+    #areas = AreaName.query.filter_by(language_id=lang_id).order_by(AreaName.id.asc())
     crop_types = CropTypeName.query.filter_by(language_id=lang_id).order_by(CropTypeName.id.asc())
     soil_types = SoilTypeName.query.filter_by(language_id=lang_id).order_by(SoilTypeName.id.asc())
 
@@ -242,7 +262,7 @@ def new_crop():
         #return render_template("crop.html", form=form, crop=crop, page_title=_('Αdd new Crop'), map_html=crop_map_html, prefectures=prefectures, areas=areas, crop_types=crop_types, soil_types=soil_types)
         return redirect(url_for('crop.showCrop', crop_id=crop.id))
     #return redirect(url_for('crop.crops'))
-    return render_template("new_crop.html", form=form, page_title=_('Αdd new Crop'), current_year=current_year, prefectures=prefectures, areas=areas, crop_types=crop_types, soil_types=soil_types)
+    return render_template("new_crop.html", form=form, page_title=_('Αdd new Crop'), crop_types=crop_types, soil_types=soil_types)
 
 
 ### User crops list ###
@@ -388,8 +408,8 @@ def edit_crop(crop_id):
 
     crop = Crop.query.filter_by(id=crop_id, owner=current_user).first_or_404()
     lang_id = session.get('lang_id')
-    prefectures = PrefectureName.query.filter_by(language_id=lang_id).order_by(PrefectureName.id.asc())
-    areas = AreaName.query.filter_by(language_id=lang_id).order_by(AreaName.id.asc())
+    #prefectures = PrefectureName.query.filter_by(language_id=lang_id).order_by(PrefectureName.id.asc())
+    #areas = AreaName.query.filter_by(language_id=lang_id).order_by(AreaName.id.asc())
     crop_types = CropTypeName.query.filter_by(language_id=lang_id).order_by(CropTypeName.id.asc())
     soil_types = SoilTypeName.query.filter_by(language_id=lang_id).order_by(SoilTypeName.id.asc())
 
@@ -462,7 +482,9 @@ def edit_crop(crop_id):
 
         return redirect(url_for('crop.showCrop', crop_id=crop.id))
 
-    return render_template("new_crop.html", form=form, crop=crop, page_title=_('Edit Crop'), prefectures=prefectures, areas=areas, crop_types=crop_types, soil_types=soil_types)
+    return render_template("new_crop.html", form=form, crop=crop, page_title=_('Edit Crop'),
+                           crop_types=crop_types,soil_types=soil_types,
+                           selected_prefecture=crop.prefecture, selected_area=crop.area)
 
 
 @crop.route("/delete_crop/<int:crop_id>", methods=["GET", "POST"])

@@ -13,6 +13,7 @@
         <form method="POST" enctype="multipart/form-data">
           {{ form.hidden_tag() }}
 
+          <!-- Input Name -->
           <div class="mb-3">
             {{ form.name.label(class="form-label") }}
             {{ form.name(class="form-control", required=False) }}
@@ -25,7 +26,7 @@
               </ul>
             {% endif %}
           </div>
-
+          <!-- Input Name -->
           <div class="mb-3">
             {{ form.location.label(class="form-label") }}
             {{ form.location(class="form-control", required=False) }}
@@ -38,49 +39,38 @@
               </ul>
             {% endif %}
           </div>
-
+          <!-- Select Prefecture -->
           <div class="mb-3">
             {{ form.prefecture.label(class="form-label") }}
-            <select class="form-select" id="prefecture" name="prefecture">
-              {% for prefecture in prefectures %}
-                {% if crop and prefecture.prefecture_id == crop.prefecture %}
-                  <option value="{{ prefecture.prefecture_id }}" selected>{{ prefecture.name | safe }}</option>
-                {% else %}
-                  <option value="{{ prefecture.prefecture_id }}">{{ prefecture.name | safe }}</option>
-                {% endif %}
-              {% endfor %}
+            <label for="prefectureSelect" class="form-label">{{_('Prefecture')}}</label>
+            <select class="form-select" id="prefectureSelect" name="prefecture">
+                <option value="" disabled selected>{{_('Select prefecture first...')}}</option>
             </select>
             <div id="crop_prefectureHelp" class="form-text">{{_('Please enter the prefecture of the crop.')}}</div>
-            {% if form.prefecture.errors %}
-              <ul class=errors>
-              {% for error in form.prefecture.errors %}
-                <li class="alert text-danger">{{ error }}</li>
-              {% endfor %}
-              </ul>
-            {% endif %}
-          </div>
-
-          <div class="mb-3">
-            {{ form.area.label(class="form-label") }}
-            <select class="form-select" id="area" name="area">
-              {% for area in areas %}
-              {% if crop and area.area_id == crop.area %}
-              <option value="{{ area.area_id }}" selected>{{ area.name | safe }}</option>
-              {% else %}
-              <option value="{{ area.area_id }}">{{ area.name | safe }}</option>
+              {% if form.prefecture.errors %}
+                <ul class=errors>
+                {% for error in form.prefecture.errors %}
+                  <li class="alert text-danger">{{ error }}</li>
+                {% endfor %}
+                </ul>
               {% endif %}
-              {% endfor %}
-            </select>
-            <div id="crop_sizeHelp" class="form-text">{{_('Please enter the area of the crop.')}}</div>
-            {% if form.area.errors %}
-              <ul class=errors>
-              {% for error in form.area.errors %}
-                <li class="alert text-danger">{{ error }}</li>
-              {% endfor %}
-              </ul>
-            {% endif %}
           </div>
-
+          <!-- Select Area -->
+          <div class="mb-3">
+            <label for="areaSelect" class="form-label">{{_('Area')}}</label>
+            <select class="form-select" id="areaSelect" name="area" disabled>
+                <option value="" disabled selected>{{_('Select area first...')}}</option>
+            </select>
+            <div id="crop_areaHelp" class="form-text">{{_('Please enter the area of the crop.')}}</div>
+              {% if form.area.errors %}
+                <ul class=errors>
+                {% for error in form.area.errors %}
+                  <li class="alert text-danger">{{ error }}</li>
+                {% endfor %}
+                </ul>
+              {% endif %}
+          </div>
+          <!-- Select Crop Type -->
           <div class="mb-3">
             {{ form.crop_type.label(class="form-label") }}
             <select class="form-select" id="crop_type" name="crop_type">
@@ -101,7 +91,7 @@
               </ul>
             {% endif %}
           </div>
-
+          <!-- Select Soil Type -->
           <div class="mb-3">
             {{ form.soil_type.label(class="form-label") }}
             <select class="form-select" id="soil_type" name="soil_type">
@@ -122,7 +112,7 @@
               </ul>
             {% endif %}
           </div>
-
+          <!-- Input Crop Size -->
           <div class="mb-3">
             {{ form.crop_size.label(class="form-label") }}
             {{ form.crop_size(class="form-control", required=False) }}
@@ -135,7 +125,7 @@
               </ul>
             {% endif %}
           </div>
-
+          <!-- Input Crop Coordinates -->
           <div class="mb-3">
             {{ form.crop_map.label(class="form-label") }}
             {{ form.crop_map(class="form-control", required=False) }}
@@ -148,7 +138,7 @@
               </ul>
             {% endif %}
           </div>
-
+          <!-- Input Crop Image -->
         <div class="mb-3">
           {{ form.image.label(class="form-label") }}
           {{ form.image(class="form-control") }}
@@ -162,6 +152,66 @@
             {% endif %}
         </div>
 
+        <script>
+          $(document).ready(function () {
+              const selectedPrefecture = {{ selected_prefecture|default('null') }};
+              const selectedArea = {{ selected_area|default('null') }};
+      
+              // Load Prefectures
+              $.ajax({
+                  url: '/get_prefectures',
+                  method: 'GET',
+                  success: function (response) {
+                      console.log("Response Prefectures:", response);
+                      const prefectures = response.prefectures;
+                      const prefectureSelect = $('#prefectureSelect');
+                      prefectureSelect.empty();
+                      prefectureSelect.append('<option value="" disabled selected>{{_('Select Prefecture...')}}</option>');
+      
+                      prefectures.forEach(prefecture => {
+                          const selected = selectedPrefecture == prefecture.id ? 'selected' : '';
+                          prefectureSelect.append(`<option value="${prefecture.id}" ${selected}>${prefecture.name}</option>`);
+                      });
+      
+                      if (selectedPrefecture) {
+                          loadAreas(selectedPrefecture);
+                      }
+                  },
+                  error: function () {
+                      console.error("ERROR Loading Prefectures.");
+                  }
+              });
+      
+              $('#prefectureSelect').on('change', function () {
+                  const prefectureId = $(this).val();
+                  loadAreas(prefectureId);
+              });
+      
+              function loadAreas(prefectureId) {
+                  $.ajax({
+                      url: `/get_areas/${prefectureId}`,
+                      method: 'GET',
+                      success: function (response) {
+                          console.log("Response Areas:", response);
+                          const areas = response.areas;
+                          const areaSelect = $('#areaSelect');
+                          areaSelect.empty();
+                          areaSelect.append('<option value="" disabled selected>{{_('Select area...')}}</option>');
+      
+                          areas.forEach(area => {
+                              const selected = selectedArea == area.id ? 'selected' : '';
+                              areaSelect.append(`<option value="${area.id}" ${selected}>${area.name}</option>`);
+                          });
+      
+                          areaSelect.prop('disabled', false);
+                      },
+                      error: function () {
+                          console.error("ERROR Loading Areas.");
+                      }
+                  });
+              }
+          });
+      </script>
 
         <div class="mb-3">
             {{ form.submit(class="btn btn-primary") }}
