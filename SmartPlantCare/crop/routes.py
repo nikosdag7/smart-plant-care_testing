@@ -9,133 +9,22 @@ from .forms.newCropForm import newCropForm
 from .models import Prefecture,PrefectureName,Area,AreaName,CropType,CropTypeName,SoilType,SoilTypeName,Crop,CropCoordinates
 from ..user.models import User
 from .. import db
+#from SmartPlantCare.crop.add_points import add_points
+from .create_map import create_map
+from .save_image import save_image
+
 #from werkzeug.urls import url_parse
 
 from SmartPlantCare import app
-
-import secrets
-from PIL import Image
-import os
 
 from datetime import datetime as dt
 
 import folium
 import json
 #import jsonify
-from scipy.spatial import ConvexHull
+#from scipy.spatial import ConvexHull
 
-current_year = dt.now().year
-
-###############################################################################
-# Function that takes a map and a list of points (LON,LAT tuples) and
-# returns a map with the convex hull polygon from the points as a new layer
-###############################################################################
-def create_convexhull_polygon(
-    map_object, list_of_points, layer_name, line_color, fill_color, weight, text
-):
-
-    # Since it is pointless to draw a convex hull polygon around less than 3 points check len of input
-    if len(list_of_points) < 3:
-        return
-
-    # Create the convex hull using scipy.spatial
-    form = [list_of_points[i] for i in ConvexHull(list_of_points).vertices]
-
-    # Create feature group, add the polygon and add the feature group to the map
-    fg = folium.FeatureGroup(name=layer_name)
-    fg.add_child(
-        folium.vector_layers.Polygon(
-            locations=form,
-            color=line_color,
-            fill_color=fill_color,
-            weight=weight,
-            popup=(folium.Popup(text)),
-        )
-    )
-    map_object.add_child(fg)
-
-    return map_object
-
-
-###############################################################################
-# Function to draw points in the map
-###############################################################################
-def draw_points(map_object, list_of_points, layer_name, line_color, fill_color, text):
-
-    fg = folium.FeatureGroup(name=layer_name)
-
-    for point in list_of_points:
-        fg.add_child(
-            folium.CircleMarker(
-                point,
-                radius=1,
-                color=line_color,
-                fill_color=fill_color,
-                popup=(folium.Popup(text)),
-            )
-        )
-
-    map_object.add_child(fg)
-
-
-###############################################################################
-# Function returns a map with the convex hull polygon from the points (LON,LAT tuples)
-###############################################################################
-def create_map(
-    coordinates, layer_name, line_color, fill_color, weight, name
-):
-
-    map_center = coordinates[0] # First point
-    crop_map = folium.Map(location=map_center,
-        zoom_start=20,
-        tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        attr = 'Esri',
-        name = 'Esri Satellite',
-        overlay = False,
-        control = True
-        )
-
-    # Draw Crop
-    create_convexhull_polygon(
-        crop_map,
-        coordinates,
-        layer_name=name,
-        line_color=line_color,
-        fill_color=fill_color,
-        weight=weight,
-        text=name,
-    )
-
-    # Add point with Crop name
-    folium.Marker(
-        coordinates[0], # First point
-        popup=name, # Crop name
-        tooltip=_('Click from more information'),
-        icon=folium.Icon(color="blue", icon="info-sign"),
-    ).add_to(crop_map)
-
-    # Convert map to HTML string
-    map_html = crop_map._repr_html_()
-    return map_html
-
-
-###############################################################################
-# Function to save crop image file 
-###############################################################################
-def image_save(image, where, size):
-    random_filename = secrets.token_hex(8)
-    file_name, file_extension = os.path.splitext(image.filename)
-    image_filename = random_filename + file_extension
-    image_path = os.path.join(app.root_path, 'static/images/'+ where, image_filename)
-
-    image_size = size # this must be a tupe in the form of: (150, 150)
-    img = Image.open(image)
-    img.thumbnail(image_size)
-
-    img.save(image_path)
-
-    return image_filename
-
+#current_year = dt.now().year
 
 @crop.route('/get_prefectures')
 @login_required
@@ -145,6 +34,7 @@ def get_prefectures():
     #print(prefectures)
     #return render_template("index.html", prefectures=prefectures)
     return jsonify({"prefectures": [{"id": p.prefecture_id, "name": p.name} for p in prefectures]})
+
 
 @crop.route('/get_areas/<int:prefecture_id>', methods=['GET'])
 @login_required
@@ -202,7 +92,7 @@ def new_crop():
         
         if form.image.data:
             try:
-                image_file = image_save(form.image.data, 'crops_images', (640, 640))
+                image_file = save_image(app, form.image.data, 'crops_images', (640, 640))
             except:
                 abort(415)
         
@@ -228,38 +118,38 @@ def new_crop():
         db.session.add(crop)
         db.session.commit()
 
-        try:
-            # Get the list of coordinates from the POST request
-            coordinates = json.loads(form.crop_map.data)
-            # Validate coordinates
-            if not coordinates or not all(isinstance(coord, list) and len(coord) == 2 for coord in coordinates):
-                #return jsonify({'error': 'Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'}), 400
-                print('error: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.')
-                flash(_('ERROR: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'), 'error')
+        if len(form.crop_map.data) > 0:
+            print("form.crop_map.data")
+            print(form.crop_map.data)
+            try:
 
-        except Exception as e:
-            #return jsonify({"error": str(e)}), 500  
-            print(str(e))
-            flash(_('Error handling Crop Coordinates Data'), 'error')
+                coordinates = json.loads(form.crop_map.data)
 
-        # Save coordinates (Map Data) in database
-        try:
-            for crop_coords in coordinates:
-                #print('#%#')
-                #print(crop_coords)
-                lon, lat = crop_coords
-                new_coord = CropCoordinates(crop_id=crop.id, longtitute=lon, latitude=lat)
-                db.session.add(new_coord)
-            db.session.commit()
+                if not coordinates:
+                    flash(_('ERROR: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'), 'warning')
+                else:
+                    # Save coordinates (Map Data) in database
+                    try:
+                        for crop_coords in coordinates:
+                            #print('#%#')
+                            #print(crop_coords)
+                            lon, lat = crop_coords
+                            new_coord = CropCoordinates(crop_id=crop.id, longtitute=lon, latitude=lat)
+                            db.session.add(new_coord)
+                        db.session.commit()
+                    except Exception as e:
+                        print(str(e))
+                        flash(_('Error saving Crop Coordinates Data'), 'warning')
+                        db.session.rollback()
 
-        except Exception as e:
-            #return jsonify({"error": str(e)}), 500  
-            print(str(e))
-            flash(_('Error handling Crop Coordinates Data'), 'error')
-            db.session.rollback()
+            except Exception as e:
+                #return jsonify({"error": str(e)}), 500  
+                print(str(e))
+                flash(_('Error handling Crop Coordinates Data'), 'warning')
+                db.session.rollback()
 
         flash(_('The crop <b>{name}</b> was successfully created').format(name=name), 'success')
-        
+            
         return redirect(url_for('crop.showCrop', crop_id=crop.id))
 
     #return redirect(url_for('crop.crops'))
@@ -299,35 +189,37 @@ def showCrop(crop_id):
     area = AreaName.query.filter_by(area_id=crop.area, language_id=lang_id).one_or_404()
     crop_type = CropTypeName.query.filter_by(crop_type_id=crop.crop_type, language_id=lang_id).one_or_404()
     soil_type = SoilTypeName.query.filter_by(soil_type_id=crop.soil_type, language_id=lang_id).one_or_404()
-    crop_coords = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).all()
+    crop_coordinates = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).all()
     form = newCropForm()
-    #print('# len(crop_coords) #')
-    #print(len(crop_coords))
+    #print('# len(crop_coordinates) #')
+    #print(len(crop_coordinates))
+    #print('# crop_coordinates #')
+    #print(crop_coordinates)
 
-    if len(crop_coords) > 0:
+    map_html = False
+
+    if len(crop_coordinates) > 0:
         try:
             # Convert in tuple list (longitude, latitude)
-            coords_list = [(coord.longtitute, coord.latitude) for coord in crop_coords]
-            print('# coords_list #')
-            print(len(coords_list))
-            coordinates = json.loads(json.dumps(coords_list))
-            print('# coordinates #')
-            print(coordinates)
-            # Validate coordinates
-            if not coordinates or not all(isinstance(coord, list) and len(coord) == 2 for coord in coordinates):
-                #return jsonify({'error': 'Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'}), 400
-                print('error: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.')
-                flash(_('ERROR: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'), 'error')
+            crop_coordinates_list = [(coord.longtitute, coord.latitude) for coord in crop_coordinates]
+            coordinates = json.loads(json.dumps(crop_coordinates_list))
+            #print('# len(coords_list) #')
+            #print(len(crop_coordinates_list))
+            #print('# coords_list #')
+            #print(crop_coordinates_list)
+            #coordinates = check_coordinates(crop_coordinates_list)
+            #print('# coordinates #')
+            #print(coordinates)
         except Exception as e:
             #return jsonify({"error": str(e)}), 500  
             print(str(e))
-            flash(_('Exception: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'), 'error')
-        
+            flash(_('Exception: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'), 'warning')
+
         if coordinates:
             map_html = create_map(coordinates, "layer_name", "red", "pink", 5, name)
-    else:
-        map_html = False
-
+        else:
+            flash(_('ERROR: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'), 'warning')
+ 
     return render_template("crop.html", form=form, crop=crop, map_html=map_html, prefecture=prefecture, area=area, crop_type=crop_type, soil_type=soil_type)
 
 
@@ -385,30 +277,33 @@ def edit_crop(crop_id):
         crop.soil_type = form.soil_type.data
 
         # Map Data exists
-        if form.crop_map.data:
+        if len(form.crop_map.data) > 0:
             #print(form.crop_map.data)
 
             # Convert String to JSON            
             try:
                 coordinates = json.loads(form.crop_map.data)
+
+                try:
+                    # Delete previous Map Data
+                    CropCoordinates.query.filter(CropCoordinates.crop_id == crop.id).delete()
+                    #Add new Map Data
+                    for crop_coords in coordinates:
+                        lon, lat = crop_coords
+                        new_coord = CropCoordinates(crop_id=crop.id, longtitute=lon, latitude=lat)
+                        db.session.add(new_coord)
+                    #db.session.commit()
+                except Exception as e:
+                    print(form.crop_map.data)
+                    print(str(e))
+                    flash(_('Error saving Crop Coordinates Data'), 'warning')
+                    db.session.rollback()
+
             except Exception as e:
                 print(form.crop_map.data)
                 print(str(e))
-                flash(_('Error handling Crop Coordinates Data'), 'error')
-            try:
-                # Delete previous Map Data
-                CropCoordinates.query.filter(CropCoordinates.crop_id == crop.id).delete()
-                #Add new Map Data
-                for crop_coords in coordinates:
-                    lon, lat = crop_coords
-                    new_coord = CropCoordinates(crop_id=crop.id, longtitute=lon, latitude=lat)
-                    db.session.add(new_coord)
-                #db.session.commit()
-            except Exception as e:
-                print(form.crop_map.data)
-                print(str(e))
-                flash(_('Error handling Crop Coordinates Data'), 'error')
-                db.session.rollback()
+                flash(_('Error handling Crop Coordinates Data'), 'warning')
+
         else:
             print("no map data")
             try:
@@ -418,11 +313,11 @@ def edit_crop(crop_id):
             except Exception as e:
                 db.session.rollback()
                 print(str(e))
-                flash(_('Error handling Crop Coordinates Data'), 'error')
+                flash(_('Error deleting Crop Coordinates Data'), 'warning')
 
         if form.image.data:
             try:
-                image_file = image_save(form.image.data, 'crops_images', (640, 640))
+                image_file = save_image(app, form.image.data, 'crops_images', (640, 640))
             except:
                 abort(415)
 
