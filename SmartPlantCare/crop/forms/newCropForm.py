@@ -62,7 +62,10 @@ class newCropForm(FlaskForm):
     # crop_map - StringField, Length(5-5000)
     crop_map = TextAreaField(label=_('Crop map'),
                            validators=[Length(min=0, max=5000, message=_('This field must be between {min} and {max} characters').format(min=0,max=5000))])
-      
+
+    # coordinates_type - StringField, Length(5-5000)
+    coordinates_type = StringField(label=_('Coordinates Type'),
+                           validators=[Length(min=0, max=4, message=_('This field must be {min} characters').format(min=4,max=4))])    
 
     # image, FileAllowed(jpg, jpeg, png)
     image = FileField(_('Image file'), validators=[Optional(strip_whitespace=True),

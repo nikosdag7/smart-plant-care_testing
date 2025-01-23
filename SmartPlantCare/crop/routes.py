@@ -19,8 +19,9 @@ from SmartPlantCare import app
 
 from datetime import datetime as dt
 
-import folium
+#import folium
 import json
+from pyproj import Transformer
 #import jsonify
 #from scipy.spatial import ConvexHull
 
@@ -89,7 +90,8 @@ def new_crop():
         crop_size = form.crop_size.data
         crop_type = form.crop_type.data
         soil_type = form.soil_type.data
-        
+        coordinates_type = form.coordinates_type.data
+
         if form.image.data:
             try:
                 image_file = save_image(app, form.image.data, 'crops_images', (640, 640))
@@ -119,8 +121,8 @@ def new_crop():
         db.session.commit()
 
         if len(form.crop_map.data) > 0:
-            print("form.crop_map.data")
-            print(form.crop_map.data)
+            #print("form.crop_map.data")
+            #print(form.crop_map.data)
             try:
 
                 coordinates = json.loads(form.crop_map.data)
@@ -130,10 +132,18 @@ def new_crop():
                 else:
                     # Save coordinates (Map Data) in database
                     try:
+                        
+                        # Settting for tranformation from EGSA87 (EPSG:2100) to WGS84 (EPSG:4326)
+                        transformer = Transformer.from_crs("epsg:2100", "epsg:4326", always_xy=False)
+                            
                         for crop_coords in coordinates:
                             #print('#%#')
                             #print(crop_coords)
                             lon, lat = crop_coords
+                            #print(f"lon={lon}, lat={lat}".format(lon=lon,lat=lat))
+                            if coordinates_type == "2100":
+                                lon, lat = transformer.transform(lon, lat)
+                            #print(f"lon={lon}, lat={lat}".format(lon=lon,lat=lat))
                             new_coord = CropCoordinates(crop_id=crop.id, longtitute=lon, latitude=lat)
                             db.session.add(new_coord)
                         db.session.commit()
@@ -189,7 +199,7 @@ def showCrop(crop_id):
     area = AreaName.query.filter_by(area_id=crop.area, language_id=lang_id).one_or_404()
     crop_type = CropTypeName.query.filter_by(crop_type_id=crop.crop_type, language_id=lang_id).one_or_404()
     soil_type = SoilTypeName.query.filter_by(soil_type_id=crop.soil_type, language_id=lang_id).one_or_404()
-    crop_coordinates = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).all()
+    crop_coordinates = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).order_by(CropCoordinates.id.asc()).all()
     form = newCropForm()
     #print('# len(crop_coordinates) #')
     #print(len(crop_coordinates))
@@ -256,6 +266,18 @@ def edit_crop(crop_id):
     #areas = AreaName.query.filter_by(language_id=lang_id).order_by(AreaName.id.asc())
     crop_types = CropTypeName.query.filter_by(language_id=lang_id).order_by(CropTypeName.id.asc())
     soil_types = SoilTypeName.query.filter_by(language_id=lang_id).order_by(SoilTypeName.id.asc())
+    crop_coordinates = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).order_by(CropCoordinates.id.asc()).all()
+    coordinates = ""
+
+    if len(crop_coordinates) > 0:
+        try:
+            # Convert in tuple list (longitude, latitude)
+            crop_coordinates_list = [(coord.longtitute, coord.latitude) for coord in crop_coordinates]
+            coordinates = json.loads(json.dumps(crop_coordinates_list))
+            #print(coordinates)
+        except Exception as e:
+            print(str(e))
+            flash(_('Exception: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'), 'warning')
 
     form = newCropForm(
         name = crop.name,
@@ -264,7 +286,8 @@ def edit_crop(crop_id):
         area = crop.area,
         crop_size = crop.crop_size,
         crop_type = crop.crop_type,
-        soil_type = crop.soil_type
+        soil_type = crop.soil_type,
+        crop_map = coordinates
         )
 
     if request.method == 'POST' and form.validate_on_submit():
@@ -275,6 +298,7 @@ def edit_crop(crop_id):
         crop.crop_size = form.crop_size.data
         crop.crop_type = form.crop_type.data
         crop.soil_type = form.soil_type.data
+        coordinates_type = form.coordinates_type.data
 
         # Map Data exists
         if len(form.crop_map.data) > 0:
@@ -284,12 +308,17 @@ def edit_crop(crop_id):
             try:
                 coordinates = json.loads(form.crop_map.data)
 
+                # Settting for tranformation from EGSA87 (EPSG:2100) to WGS84 (EPSG:4326)
+                transformer = Transformer.from_crs("epsg:2100", "epsg:4326", always_xy=False)
+                            
                 try:
                     # Delete previous Map Data
                     CropCoordinates.query.filter(CropCoordinates.crop_id == crop.id).delete()
                     #Add new Map Data
                     for crop_coords in coordinates:
                         lon, lat = crop_coords
+                        if coordinates_type == "2100":
+                            lon, lat = transformer.transform(lon, lat)
                         new_coord = CropCoordinates(crop_id=crop.id, longtitute=lon, latitude=lat)
                         db.session.add(new_coord)
                     #db.session.commit()

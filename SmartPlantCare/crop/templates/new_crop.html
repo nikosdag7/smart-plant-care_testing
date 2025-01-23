@@ -44,7 +44,7 @@
             {{ form.prefecture.label(class="form-label") }}
             <label for="prefectureSelect" class="form-label">{{_('Prefecture')}}</label>
             <select class="form-select" id="prefectureSelect" name="prefecture">
-                <option value="" disabled selected>{{_('Select prefecture first...')}}</option>
+                <option value="" disabled selected>{{_('Select prefecture')}}</option>
             </select>
             <div id="crop_prefectureHelp" class="form-text">{{_('Please enter the prefecture of the crop.')}}</div>
               {% if form.prefecture.errors %}
@@ -59,7 +59,7 @@
           <div class="mb-3">
             <label for="areaSelect" class="form-label">{{_('Area')}}</label>
             <select class="form-select" id="areaSelect" name="area" disabled>
-                <option value="" disabled selected>{{_('Select area first...')}}</option>
+                <option value="" disabled selected>{{_('Select area')}}</option>
             </select>
             <div id="crop_areaHelp" class="form-text">{{_('Please enter the area of the crop.')}}</div>
               {% if form.area.errors %}
@@ -74,6 +74,7 @@
           <div class="mb-3">
             {{ form.crop_type.label(class="form-label") }}
             <select class="form-select" id="crop_type" name="crop_type">
+              <option value="" disabled selected>{{_('Select Crop Type')}}</option>
               {% for crop_type in crop_types %}
               {% if crop and crop_type.crop_type_id == crop.crop_type %}
               <option value="{{ crop_type.crop_type_id }}" selected>{{ crop_type.name | safe }}</option>
@@ -95,6 +96,7 @@
           <div class="mb-3">
             {{ form.soil_type.label(class="form-label") }}
             <select class="form-select" id="soil_type" name="soil_type">
+              <option value="" disabled selected>{{_('Select Soil Type')}}</option>
               {% for soil_type in soil_types %}
               {% if crop and soil_type.soil_type_id == crop.soil_type %}
               <option value="{{ soil_type.soil_type_id }}" selected>{{ soil_type.name | safe }}</option>
@@ -103,7 +105,7 @@
               {% endif %}
               {% endfor %}
             </select>
-            <div id="crop_soilypeHelp" class="form-text">{{_('Please enter the soil type of the crop.')}}</div>
+            <div id="crop_soil_typeHelp" class="form-text">{{_('Please enter the soil type of the crop.')}}</div>
             {% if form.soil_type.errors %}
               <ul class=errors>
               {% for error in form.soil_type.errors %}
@@ -133,6 +135,23 @@
             {% if form.crop_map.errors %}
               <ul class=errors>
               {% for error in form.crop_map.errors %}
+                <li class="alert text-danger">{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+          <!-- Select Coordinates Type -->
+          <div class="mb-3">
+            {{ form.coordinates_type.label(class="form-label") }}
+            <select class="form-select" id="coordinates_type" name="coordinates_type">
+              <option value="" disabled selected>{{_('Select Coordinates Type')}}</option>
+              <option value="4326" selected>WGS84</option>
+              <option value="2100">{{_('EGSA87')}}</option>
+            </select>
+            <div id="coordinates_typeHelp" class="form-text">{{_('Please enter the Coordinates type')}}</div>
+            {% if form.coordinates_type.errors %}
+              <ul class=errors>
+              {% for error in form.coordinates_type.errors %}
                 <li class="alert text-danger">{{ error }}</li>
               {% endfor %}
               </ul>
