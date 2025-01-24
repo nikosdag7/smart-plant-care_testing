@@ -39,5 +39,9 @@ app.register_blueprint(crop_bp)
 from .sensor import sensor as sensor_bp
 app.register_blueprint(sensor_bp)
 
+# blueprint for parts of app
+from .irrigation import irrigation as irrigation_bp
+app.register_blueprint(irrigation_bp)
+
 #from SmartPlantCare import routes, models
 from SmartPlantCare import routes
