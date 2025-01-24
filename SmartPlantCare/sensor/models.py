@@ -1,5 +1,5 @@
 from .. import db
-from ..user.models import User
+#from ..user.models import User
 from sqlalchemy import PrimaryKeyConstraint, ForeignKeyConstraint, UniqueConstraint
 #from werkzeug.security import generate_password_hash, check_password_hash
 #from .. import login
@@ -10,6 +10,11 @@ from sqlalchemy import PrimaryKeyConstraint, ForeignKeyConstraint, UniqueConstra
 from datetime import datetime
 
 class Sensor(db.Model):
+    __tablename__ = 'sensor'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='sensor_pk'),
+        ForeignKeyConstraint(['crop_id'], ['crop.id'])        
+    )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     loc_longtitute = db.Column(db.Float, nullable=False)
     loc_latitude = db.Column(db.Float, nullable=False)
@@ -19,6 +24,11 @@ class Sensor(db.Model):
         return f"{self.id}:{self.crop_id}:{self.loc_longtitute}:{self.loc_latitude}"
 
 class SensorData(db.Model):
+    __tablename__ = 'sensor_data'
+    __table_args__ = (
+        PrimaryKeyConstraint('id', name='sensor_data_pk'),
+        ForeignKeyConstraint(['sensor_id'], ['sensor.id'])        
+    )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
     velue = db.Column(db.Float, nullable=False)
