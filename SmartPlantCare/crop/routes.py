@@ -8,6 +8,7 @@ from . import crop
 from .forms.newCropForm import newCropForm
 from .models import Prefecture,PrefectureName,Area,AreaName,CropType,CropTypeName,SoilType,SoilTypeName,Crop,CropCoordinates
 from ..user.models import User
+from ..sensor.models import Sensor
 from .. import db
 #from SmartPlantCare.crop.add_points import add_points
 from .create_map import create_map
@@ -200,6 +201,9 @@ def showCrop(crop_id):
     crop_type = CropTypeName.query.filter_by(crop_type_id=crop.crop_type, language_id=lang_id).one_or_404()
     soil_type = SoilTypeName.query.filter_by(soil_type_id=crop.soil_type, language_id=lang_id).one_or_404()
     crop_coordinates = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).order_by(CropCoordinates.id.asc()).all()
+    sensors = Sensor.query.filter_by(crop_id=crop_id).order_by(Sensor.id.asc()).all()
+    #print('# sensors #')
+    #print(sensors)
     form = newCropForm()
     #print('# len(crop_coordinates) #')
     #print(len(crop_coordinates))
@@ -230,7 +234,9 @@ def showCrop(crop_id):
         else:
             flash(_('ERROR: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'), 'warning')
  
-    return render_template("crop.html", form=form, crop=crop, map_html=map_html, prefecture=prefecture, area=area, crop_type=crop_type, soil_type=soil_type)
+    return render_template("crop.html", form=form, crop=crop, map_html=map_html,
+                           prefecture=prefecture, area=area, crop_type=crop_type,
+                            soil_type=soil_type, sensors=sensors)
 
 
 @crop.route("/crops_by_owner/<int:owner_id>")

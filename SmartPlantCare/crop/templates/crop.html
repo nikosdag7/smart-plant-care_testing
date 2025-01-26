@@ -31,6 +31,15 @@
     			<p class="main-crop-data">
             {{_('Crop type')}}: {{ crop_type.name | safe }}, {{_('Soil type')}}: {{ soil_type.name | safe }}
           </p>
+
+          {% if sensors %}
+            <p class="main-crop-data">{{_('Sensors')}}:<ul>
+            {% for sensor in sensors %}
+              <li>ID: {{ sensor.id }}, {{_('Possition')}}: {{_('Longtitute')}} {{sensor.loc_longtitute}}, {{_('Latitude')}} {{sensor.loc_latitude}} <a href="{{ url_for('sensor.get_sensor_data', sensor_id=sensor.id) }}">{{_('Sensor Data')}}</a></li>
+            {% endfor %}
+            </ul></p>
+          {% endif %}
+
           <div>
             {% if crop.owner == current_user %}
               <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('crop.edit_crop', crop_id=crop.id) }}">{{_('Edit')}}</a>
