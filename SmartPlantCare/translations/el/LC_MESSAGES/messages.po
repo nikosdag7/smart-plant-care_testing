@@ -165,6 +165,10 @@ msgstr "Καλλιέργειες του"
 msgid "Crops by user "
 msgstr "Καλλιέργειες απο το χρήστη"
 
+#: SmartPlantCare/crop/templates/weather_readings.html:9
+msgid "Weather Readings"
+msgstr "Μετρήσεις Καιρού"
+
 #: SmartPlantCare/crop/templates/my_crops.html:4
 #: SmartPlantCare/crop/templates/my_crops.html:9
 msgid "My Crops"
@@ -229,6 +233,11 @@ msgstr "Οι καλλιέργειές μου"
 #: SmartPlantCare/templates/navbar.html:16
 msgid "New Crop"
 msgstr "Νέα Καλλιέργεια"
+
+#: SmartPlantCare/crop/templates/navbar.html:19
+msgid "Weather Readings"
+msgstr "Μετρήσεις Καιρού"
+
 
 #: SmartPlantCare/templates/navbar.html:30
 msgid "Logout"

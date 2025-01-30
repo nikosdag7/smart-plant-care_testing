@@ -9,9 +9,12 @@ from .forms.newCropForm import newCropForm
 from .models import Crop, CropCoordinates
 from ..user.models import User
 from .. import db
+import subprocess
+import os
 #from werkzeug.urls import url_parse
 
 from SmartPlantCare import app
+
 
 import secrets
 from PIL import Image
@@ -25,6 +28,7 @@ import jsonify
 from scipy.spatial import ConvexHull
 
 current_year = dt.now().year
+
 
 ###############################################################################
 # Function that takes a map and a list of points (LON,LAT tuples) and
@@ -85,7 +89,7 @@ def image_save(image, where, size):
     random_filename = secrets.token_hex(8)
     file_name, file_extension = os.path.splitext(image.filename)
     image_filename = random_filename + file_extension
-    image_path = os.path.join(app.root_path, 'static/images/'+ where, image_filename)
+    image_path = os.path.join(app.root_path, 'static/images/', image_filename)
 
     image_size = size # this must be a tupe in the form of: (150, 150)
     img = Image.open(image)
@@ -256,6 +260,29 @@ def my_crops():
         return render_template('404.html'), 404
 
     return render_template("my_crops.html", crops=crops, owner=current_user, ordering_by=ordering_by)
+
+
+@crop.route("/weather_readings")
+@login_required
+def weather_readings():
+    from SmartPlantCare.crop.txt_insert import create_plots
+    from bokeh.plotting import figure
+    from bokeh.embed import components
+    from bokeh.resources import CDN
+    import sqlite3
+    import pandas as pd
+    
+    con=sqlite3.connect("C:/Users/nikos/Desktop/smart-plant-care/flask_crops_database.db", check_same_thread=False)
+    df = pd.read_sql_query("SELECT * FROM monthly_weather",con)
+    df['DAY'] = pd.to_datetime(df['DAY'])
+    try:
+        result = subprocess.run(['python', 'SmartPlantCare/crop/get_weather_data.py'])
+        result2 = subprocess.run(['python', 'SmartPlantCare/crop/txt_insert.py'])
+        script, div = create_plots(df)
+        resources = CDN.render() 
+    except Exception as e:
+        return render_template('404.html', error=str(e))  # Handle errors
+    return render_template("weather_readings.html", owner=current_user,result = result,result2 = result2,script = script,div = div,resources=resources)
 
 
 @crop.route("/crop/<int:crop_id>", methods=["GET"])
@@ -452,3 +479,6 @@ def delete_crop(crop_id):
     flash(_('The crop was not found.'), 'warning')
 
     return redirect(url_for('crop.crops'), form=form)
+
+
+
