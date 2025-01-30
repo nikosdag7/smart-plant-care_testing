@@ -27,6 +27,7 @@ packaging==24.2
 pillow==11.1.0
 psycopg2-binary==2.9.10
 pycparser==2.22
+pyproj==3.7.0
 pytz==2024.2
 requests==2.32.3
 scipy==1.15.0

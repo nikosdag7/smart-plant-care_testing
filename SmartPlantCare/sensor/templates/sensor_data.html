@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{_('Home Page')}}
+{% endblock title %}
+
+{% block content %}
+
+    <h2 class="aba_header">{{_('Crop Name')}}: {{ crop.name }}</h2>
+    <hr>
+    <h4 class="aba_header">ID: {{ sensor.id }}, {{_('Possition')}}: {{_('Longtitute')}} {{sensor.loc_longtitute}}, {{_('Latitude')}} {{sensor.loc_latitude}}</h4>
+    <h3 class="aba_header">{{_('Sensor Value')}}: {{ sensor_data }}</h3>
+    <hr>
+
+{% endblock %}

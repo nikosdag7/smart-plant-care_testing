@@ -10,7 +10,7 @@
     <hr>
 
     <div class="align-buttons"><a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('crop.my_crops', ordering_by='name') }}">{{_('Sorting by name')}}</a>
-      &nbsp;&nbsp;&nbsp; <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('crop.my_crops', ordering_by='crop_area') }}">{{_('Sorting by size')}}</a></div>
+      &nbsp;&nbsp;&nbsp; <a class="btn btn-primary btn-sm mt-1 mb-1" href="{{ url_for('crop.my_crops', ordering_by='crop_size') }}">{{_('Sorting by size')}}</a></div>
     <hr>
 
     {% if crops %}
@@ -25,7 +25,7 @@
             </div>
             <div class="col col-md-12">
               <div class="main-crop-title">
-                <a class="crop_title" href="{{ url_for('crop.showCrop', crop_id=crop.id) }}">{{ crop.name | safe }} ({{ crop.location | safe }}) [{{ crop.crop_area | safe }}]</a>
+                <a class="crop_title" href="{{ url_for('crop.showCrop', crop_id=crop.id) }}">{{ crop.name | safe }} ({{ crop.location | safe }}) [{{ crop.crop_size | safe }}]</a>
               </div>
               <small class="crop_prefecture">[{{ crop.prefecture | safe }}]</small>
               <p class="main-crop-partial-text">
