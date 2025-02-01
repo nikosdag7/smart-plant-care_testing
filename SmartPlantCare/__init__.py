@@ -27,6 +27,10 @@ login_manager.login_view = 'user.login_page'
 login_manager.login_message_category = 'warning'
 login_manager.login_message = _('Please login to be able to view this page.')
 
+#celery setup
+from .celery_app import make_celery
+celery=make_celery(app)
+
 # blueprint for auth routes
 from .user import user as user_bp
 app.register_blueprint(user_bp)
@@ -45,3 +49,23 @@ app.register_blueprint(irrigation_bp)
 
 #from SmartPlantCare import routes, models
 from SmartPlantCare import routes
+
+# blueprint for parts of app
+from .alert import alert as alert_bp
+app.register_blueprint(alert_bp)
+import SmartPlantCare.celery.tasks #import tasks to be able to register them.
+#from SmartPlantCare import routes, models
+
+
+#write ahead logging for better concurrency
+# WAL setup
+from sqlalchemy import text
+"""
+@app.before_request
+def before_request_setup():
+    with app.app_context():
+        # Accessing the database connection correctly and wrapping the query with text()
+        with db.session.begin():
+            db.session.execute(text('PRAGMA journal_mode = WAL'))
+            print("WAL mode set for SQLite.")
+"""
