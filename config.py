@@ -9,7 +9,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LANGUAGES = ['el', 'en']  # Support Greek and English language
     # celery settings
-    CELERY_TIMEDELTA = os.environ.get('CELERY_TIMEDELTA') or 30 #30 sec, 300/5min, 43200/12hours
+    CELERY_TIMEDELTA = os.environ.get('CELERY_TIMEDELTA') or 300 #30 sec, 300/5min, 43200/12hours
     CELERY_WORKER_CMD = ["celery", "-A", "SmartPlantCare.celery", "worker", "--loglevel=info"]
     CELERY_BEAT_CMD = ["celery", "-A", "SmartPlantCare.celery", "beat", "--loglevel=info"]
     RESULT_BACKEND = 'db+sqlite:///' + os.path.join(basedir, 'alert_results.db')

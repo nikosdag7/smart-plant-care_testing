@@ -8,7 +8,7 @@ from datetime import timedelta
 ###########################
 def make_celery(app):
 
-    CELERY_TIMEDELTA = app.config['CELERY_TIMEDELTA']
+    CELERY_TIMEDELTA = int(app.config['CELERY_TIMEDELTA'])
     print ("##### CELERY TIMEDELTA #####")
     print(CELERY_TIMEDELTA)
     result_backend = app.config['RESULT_BACKEND']
