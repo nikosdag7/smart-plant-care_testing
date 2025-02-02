@@ -12,8 +12,8 @@ class Config(object):
     CELERY_TIMEDELTA = os.environ.get('CELERY_TIMEDELTA') or 300 #30 sec, 300/5min, 43200/12hours
     CELERY_WORKER_CMD = ["celery", "-A", "SmartPlantCare.celery", "worker", "--loglevel=info"]
     CELERY_BEAT_CMD = ["celery", "-A", "SmartPlantCare.celery", "beat", "--loglevel=info"]
-    RESULT_BACKEND = 'db+sqlite:///' + os.path.join(basedir, 'alert_results.db')
-    BROKER = 'sqla+sqlite:///' + os.path.join(basedir, 'alert_tasks.db')
+    RESULT_BACKEND = os.environ.get('RESULT_BACKEND') or 'db+sqlite:///' + os.path.join(basedir, 'alert_results.db')
+    BROKER = os.environ.get('BROKER') or 'sqla+sqlite:///' + os.path.join(basedir, 'alert_tasks.db')
     # email notifications
     NOTIFICATION_SENDER_EMAIL_ADDRESS = os.environ['NOTIFICATION_SENDER_EMAIL_ADDRESS']
     NOTIFICATION_EMAIL_PASSWORD = os.environ['NOTIFICATION_EMAIL_PASSWORD']
