@@ -139,7 +139,7 @@ INSERT INTO public."user" (id, username, email, profile_image, password) VALUES 
 -- Data for Name: crop
 --
 
-INSERT INTO public.crop (id, name, location, prefecture, area, crop_size, crop_type, soil_type, image, user_id) VALUES (1, 'Λιόφυτο Βρύση', 'Λαγκάδα', 1, 3, 2.8, 1, 2, 'default_crop_image.png', 1);
+INSERT INTO public.crop (id, name, location, prefecture, area, crop_size, crop_type, soil_type, image, user_id) VALUES (1, 'Λιόφυτο Βρύση', 'Λαγκάδα', 1, 17, 2.8, 1, 2, 'default_crop_image.png', 1);
 
 --
 -- Data for Name: crop_coordinates

@@ -32,6 +32,8 @@
             {{_('Crop type')}}: {{ crop_type.name | safe }}, {{_('Soil type')}}: {{ soil_type.name | safe }}
           </p>
 
+          <p class="main-crop-data"><a href="{{ url_for('irrigation.graph_example', crop_id=crop.id) }}">{{_('Grraph Example')}}</a></p>
+          
           {% if sensors %}
             <p class="main-crop-data">{{_('Sensors')}}:<ul>
             {% for sensor in sensors %}
