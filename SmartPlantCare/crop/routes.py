@@ -10,7 +10,7 @@ from .models import Prefecture,PrefectureName,Area,AreaName,CropType,CropTypeNam
 from ..user.models import User
 from ..sensor.models import Sensor
 from .. import db
-<<<<<<< HEAD
+
 import subprocess
 import os
 
@@ -23,7 +23,7 @@ from .save_image import save_image
 
 from SmartPlantCare import app
 
-<<<<<<< HEAD
+
 
 import secrets
 from PIL import Image
@@ -108,7 +108,7 @@ def image_save(image, where, size):
     img.save(image_path)
 
     return image_filename
-=======
+
 @crop.route('/get_prefectures')
 @login_required
 def get_prefectures():
@@ -276,15 +276,12 @@ def my_crops():
 @login_required
 def weather_readings():
     from SmartPlantCare.crop.txt_insert import create_plots
-    from bokeh.plotting import figure
-    from bokeh.embed import components
     from bokeh.resources import CDN
     import sqlite3
     import pandas as pd
     
     con=sqlite3.connect("C:/Users/nikos/Desktop/smart-plant-care/flask_crops_database.db", check_same_thread=False)
     df = pd.read_sql_query("SELECT * FROM monthly_weather",con)
-    df['DAY'] = pd.to_datetime(df['DAY'])
     try:
         result = subprocess.run(['python', 'SmartPlantCare/crop/get_weather_data.py'])
         result2 = subprocess.run(['python', 'SmartPlantCare/crop/txt_insert.py'])
