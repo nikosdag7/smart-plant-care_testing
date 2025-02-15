@@ -27,9 +27,6 @@ def check_sensor_data_thresholds():
 
     print("Alert-Notification Daemon(task) periodic execution.")
 
-    #session = db.session
-    #db.session.autoflush = False
-
     try:
         # Get all crops
         crops =  db.session.query(Crop).all()

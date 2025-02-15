@@ -1,11 +1,12 @@
-from flask import render_template, flash, redirect, url_for, request, session, abort
-from flask_login import login_user, logout_user, login_required, current_user
+from flask import render_template, request, session
+#from flask import flash, redirect, url_for, abort
+from flask_login import login_required
+#from flask_login import login_user, logout_user, current_user
 from flask_babel import _
 from . import sensor
 from .models import Sensor, SensorData
 from ..crop.models import Crop
 from SmartPlantCare import app
-
 
 @sensor.route("/get_sensor_data/<int:sensor_id>", methods=['GET'])
 @login_required

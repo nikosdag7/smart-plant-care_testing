@@ -1,11 +1,10 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_babel import _
-from wtforms import DateField, StringField, SubmitField, BooleanField, TextAreaField, IntegerField, FloatField
-#from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError, Optional, NumberRange
-from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, Optional, NumberRange
-#from SmartPlantCare.models import User
-#from flask_login import current_user
+from wtforms import DateField, SubmitField
+#from wtforms import StringField, BooleanField, TextAreaField, IntegerField, FloatField
+from wtforms.validators import DataRequired, Optional
+#from wtforms.validators import Length, EqualTo, ValidationError, NumberRange
 
 class newBulletin(FlaskForm):
 

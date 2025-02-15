@@ -1,5 +1,6 @@
 from .. import db
-from sqlalchemy import PrimaryKeyConstraint, ForeignKeyConstraint, UniqueConstraint
+from sqlalchemy import PrimaryKeyConstraint, ForeignKeyConstraint
+#from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 

@@ -1,13 +1,6 @@
-#from pickle import FALSE
-#from tokenize import String
-#import csv
-#import pandas as pd
-#from io import StringIO
-#import io
-#import os
-#import tempfile
-from flask import render_template, flash, redirect, url_for, request, session, abort
-from flask_login import login_user, logout_user, login_required, current_user
+from flask import render_template, flash, request
+#from flask import redirect, url_for, session, abort
+#from flask_login import login_user, logout_user, login_required, current_user
 from flask_babel import _
 from . import irrigation
 from .insert_bulletin_data import insert_bulletin_data
@@ -15,11 +8,7 @@ from .forms.newBulletin import newBulletin
 from .forms.graphExample import graphExample
 from .models import regionBulletin, regionBulletinData
 from ..crop.models import Crop
-#from .models import regionData
-#from ..crop.models import Prefecture, PrefectureName, Area, AreaName, CropType, CropTypeName, SoilType, SoilTypeName
 from .. import db
-#import os
-#from datetime import datetime as dt
 
 from SmartPlantCare import app
 

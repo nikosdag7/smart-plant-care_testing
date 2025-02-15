@@ -1,27 +1,17 @@
 from pickle import FALSE
-from tokenize import String
 from flask import render_template, flash, redirect, url_for, request, session, abort
-from flask_login import login_user, logout_user, login_required, \
-    current_user
+from flask_login import login_user, logout_user, login_required, current_user
 from flask_babel import _
+import secrets
+from PIL import Image
+import os
+from datetime import datetime as dt
 from . import user
-
-#from .forms import SignupForm, AccountUpdateForm
-
-#from .formss import loginForm
-#from SmartPlantCare.user.formss.loginForm import loginForm
 from .forms.signupForm import signupForm
 from .forms.loginForm import loginForm
 from .forms.accountUpdateForm import accountUpdateForm
 from .models import Language, User
 from .. import db, bcrypt
-#from werkzeug.urls import url_parse
-
-import secrets
-from PIL import Image
-import os
-from datetime import datetime as dt
-
 from SmartPlantCare import app
 
 current_year = dt.now().year

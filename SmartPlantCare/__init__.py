@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from flask_babel import Babel, _
 from flask_bcrypt import Bcrypt
+import SmartPlantCare.celery.tasks #import tasks to be able to register them.
 
 # set up babel
 def get_locale():
@@ -17,9 +18,8 @@ bcrypt = Bcrypt(app)
 csrf = CSRFProtect()
 babel = Babel()
 
-
 db = SQLAlchemy(app)
-#migrate = Migrate(app, db)
+
 csrf.init_app(app)
 babel.init_app(app, locale_selector=get_locale)
 login_manager = LoginManager(app)
@@ -47,25 +47,8 @@ app.register_blueprint(sensor_bp)
 from .irrigation import irrigation as irrigation_bp
 app.register_blueprint(irrigation_bp)
 
-#from SmartPlantCare import routes, models
 from SmartPlantCare import routes
 
 # blueprint for parts of app
 from .alert import alert as alert_bp
 app.register_blueprint(alert_bp)
-import SmartPlantCare.celery.tasks #import tasks to be able to register them.
-#from SmartPlantCare import routes, models
-
-
-#write ahead logging for better concurrency
-# WAL setup
-from sqlalchemy import text
-"""
-@app.before_request
-def before_request_setup():
-    with app.app_context():
-        # Accessing the database connection correctly and wrapping the query with text()
-        with db.session.begin():
-            db.session.execute(text('PRAGMA journal_mode = WAL'))
-            print("WAL mode set for SQLite.")
-"""
