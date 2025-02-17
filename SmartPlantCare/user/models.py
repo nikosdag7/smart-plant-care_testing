@@ -25,6 +25,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(15), unique=True, nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
+    mobile = db.Column(db.String(10), unique=True, nullable=False)
     profile_image = db.Column(db.String(30), nullable=False, default='default_profile_image.png')
     password = db.Column(db.String(128), nullable=False)
     crops = db.relationship('Crop', backref='owner', lazy=True)

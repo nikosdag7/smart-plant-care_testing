@@ -131,8 +131,8 @@ INSERT INTO public.soil_type (id) VALUES (3);
 -- Data for Name: user
 --
 
-INSERT INTO public."user" (id, username, email, profile_image, password) VALUES (1, 'grigoris', 'mtp329@edu.hmu.gr', 'default_profile_image.png', '$2b$12$t3ODmvNTLMDtSM0cThQg6OUJlI0S2K0qw4CwqLSUeoe5J34FMD6K6');
-INSERT INTO public."user" (id, username, email, profile_image, password) VALUES (2, 'NikosMouzakitis', 'mzktsn@gmail.com', 'default_profile_image.png', '$2b$12$qDQfKLq2jkKn657CbsKAZehO1D6DZO/OcAgfL2xKTrybemrRRgngK');
+INSERT INTO public."user" (id, username, email, mobile, profile_image, password) VALUES (1, 'grigoris', 'mtp329@edu.hmu.gr', '6900000001', 'default_profile_image.png', '$2b$12$t3ODmvNTLMDtSM0cThQg6OUJlI0S2K0qw4CwqLSUeoe5J34FMD6K6');
+INSERT INTO public."user" (id, username, email, mobile, profile_image, password) VALUES (2, 'NikosMouzakitis', 'mzktsn@gmail.com', '6900000002', 'default_profile_image.png', '$2b$12$qDQfKLq2jkKn657CbsKAZehO1D6DZO/OcAgfL2xKTrybemrRRgngK');
 
 
 --

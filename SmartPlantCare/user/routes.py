@@ -46,12 +46,13 @@ def signup():
 
         username = form.username.data
         email = form.email.data
+        mobile = form.mobile.data
         password = form.password.data
         password2 = form.password2.data
 
         encrypted_password = bcrypt.generate_password_hash(password).decode('UTF-8')
 
-        user = User(username=username, email=email, password=encrypted_password)
+        user = User(username=username, email=email, mobile=mobile, password=encrypted_password)
         db.session.add(user)
         db.session.commit()
 
@@ -65,12 +66,13 @@ def signup():
 @login_required
 def account():
 
-    form = accountUpdateForm(username=current_user.username, email=current_user.email)
+    form = accountUpdateForm(username=current_user.username, email=current_user.email, mobile=current_user.mobile)
 
     if request.method == 'POST' and form.validate_on_submit():
 
         current_user.username = form.username.data
         current_user.email = form.email.data
+        current_user.mobile = form.mobile.data
 
         if form.profile_image.data:
 

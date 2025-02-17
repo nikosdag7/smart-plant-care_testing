@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired, Length, Email, Optional
 from flask_login import current_user
 from flask_babel import _
 from datetime import datetime as dt
+import phonenumbers 
 from ..models import User
 
 current_year = dt.now().year
@@ -25,6 +26,17 @@ def validate_email(form, email):
     if user:
         raise ValidationError(_('This email already exists!'))
 
+### Validation mobile ###
+def validate_mobile(form, mobile):
+    if len(mobile.data) != 10:
+        raise ValidationError(_('Invalid phone number.'))
+    try:
+        input_number = phonenumbers.parse("+30"+mobile.data)
+        if not (phonenumbers.is_valid_number(input_number)):
+            raise ValidationError('Invalid phone number.')
+    except:
+        raise ValidationError('Invalid phone number.')
+
 class accountUpdateForm(FlaskForm):
     username = StringField(label=_('Username'),
                            validators=[DataRequired(message=_('This field cannot be empty.')),
@@ -33,6 +45,11 @@ class accountUpdateForm(FlaskForm):
     email = StringField(label=_('Email'),
                            validators=[DataRequired(message=_('This field cannot be empty.')), 
                                        Email(message=_('Please enter a valid email address'))])
+
+    mobile = StringField(label=_('Mobile (+30)'),
+                           validators=[DataRequired(message=_('This field cannot be empty.')),
+                                       Length(min=10, max=10, message=_('This field must be 10 characters')),
+                                       validate_mobile])
 
     profile_image = FileField(_('Crop image'), validators=[Optional(strip_whitespace=True),
                                                            FileAllowed([ 'jpg', 'jpeg', 'png' ],
