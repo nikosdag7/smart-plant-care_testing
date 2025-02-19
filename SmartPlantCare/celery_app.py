@@ -1,8 +1,7 @@
 from celery import Celery
 from datetime import timedelta
-#from . import app
-#import multiprocessing
-#import subprocess
+import SmartPlantCare.celery.tasks
+
 ###########################
 ##CELERY CONFIGURATION ####
 ###########################
@@ -45,4 +44,3 @@ def make_celery(app):
 
     celery.Task = ContextTask
     return celery
-import SmartPlantCare.celery.tasks

@@ -1,7 +1,7 @@
-from flask import render_template, redirect, url_for
+from flask import render_template
+#from flask import redirect, url_for
 
 from SmartPlantCare import app
-
 
 ### ERROR HANDLERS START ###
 
@@ -23,5 +23,3 @@ def unsupported_media_type(e):
 @app.route("/")
 def root():
     return render_template("index.html")
-    #return render_template("foo.html")
-    #return redirect(url_for('crop.crops'))

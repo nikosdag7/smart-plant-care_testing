@@ -1,15 +1,17 @@
 from flask import render_template, flash, redirect, url_for, request, session, abort, jsonify
-from flask_login import login_user, logout_user, login_required, \
-    current_user
+from flask_login import login_required, current_user
+#from flask_login import login_user, logout_user
 from flask_babel import _
+import json
+from pyproj import Transformer
 from . import crop
-#from .forms import RegistrationForm, LoginForm
-#from SmartPlantCare.forms import NewCropForm
 from .forms.newCropForm import newCropForm
-from .models import Prefecture,PrefectureName,Area,AreaName,CropType,CropTypeName,SoilType,SoilTypeName,Crop,CropCoordinates
+from .models import PrefectureName, AreaName, CropTypeName, SoilTypeName, Crop, CropCoordinates
+#from .models import Prefecture,Area,CropType,SoilType
 from ..user.models import User
 from ..sensor.models import Sensor
 from .. import db
+<<<<<<< HEAD
 
 import subprocess
 import os
@@ -109,13 +111,17 @@ def image_save(image, where, size):
 
     return image_filename
 
+=======
+from .create_map import create_map
+from .save_image import save_image
+from SmartPlantCare import app
+
+>>>>>>> b596b0a8dce8d55a27ef83c29a0125bb89e41303
 @crop.route('/get_prefectures')
 @login_required
 def get_prefectures():
     lang_id = session.get('lang_id')
     prefectures = PrefectureName.query.filter_by(language_id=lang_id).order_by(PrefectureName.id.asc()).all()
-    #print(prefectures)
-    #return render_template("index.html", prefectures=prefectures)
     return jsonify({"prefectures": [{"id": p.prefecture_id, "name": p.name} for p in prefectures]})
 
 
@@ -124,8 +130,6 @@ def get_prefectures():
 def get_areas(prefecture_id):
     lang_id = session.get('lang_id')
     areas = AreaName.query.filter_by(prefecture_id=prefecture_id,language_id=lang_id).order_by(AreaName.id.asc()).all()
-    #print(areas)
-    #return render_template("index.html", areas=areas)
     return jsonify({"areas": [{"id": a.area_id, "name": a.name} for a in areas]})
 
 
@@ -157,13 +161,8 @@ def new_crop():
     
     form = newCropForm()
     lang_id = session.get('lang_id')
-    #prefectures = PrefectureName.query.filter_by(language_id=lang_id).order_by(PrefectureName.id.asc())
-    #areas = AreaName.query.filter_by(language_id=lang_id).order_by(AreaName.id.asc())
     crop_types = CropTypeName.query.filter_by(language_id=lang_id).order_by(CropTypeName.id.asc())
     soil_types = SoilTypeName.query.filter_by(language_id=lang_id).order_by(SoilTypeName.id.asc())
-
-    #for soil_type in soil_types:
-    #    print(soil_type.name)
 
     if request.method == 'POST' and form.validate_on_submit():
         name = form.name.data
@@ -204,8 +203,6 @@ def new_crop():
         db.session.commit()
 
         if len(form.crop_map.data) > 0:
-            #print("form.crop_map.data")
-            #print(form.crop_map.data)
             try:
 
                 coordinates = json.loads(form.crop_map.data)
@@ -220,13 +217,9 @@ def new_crop():
                         transformer = Transformer.from_crs("epsg:2100", "epsg:4326", always_xy=False)
                             
                         for crop_coords in coordinates:
-                            #print('#%#')
-                            #print(crop_coords)
                             lon, lat = crop_coords
-                            #print(f"lon={lon}, lat={lat}".format(lon=lon,lat=lat))
                             if coordinates_type == "2100":
                                 lon, lat = transformer.transform(lon, lat)
-                            #print(f"lon={lon}, lat={lat}".format(lon=lon,lat=lat))
                             new_coord = CropCoordinates(crop_id=crop.id, longtitute=lon, latitude=lat)
                             db.session.add(new_coord)
                         db.session.commit()
@@ -236,7 +229,6 @@ def new_crop():
                         db.session.rollback()
 
             except Exception as e:
-                #return jsonify({"error": str(e)}), 500  
                 print(str(e))
                 flash(_('Error handling Crop Coordinates Data'), 'warning')
                 db.session.rollback()
@@ -245,7 +237,6 @@ def new_crop():
             
         return redirect(url_for('crop.showCrop', crop_id=crop.id))
 
-    #return redirect(url_for('crop.crops'))
     return render_template("new_crop.html", form=form, page_title=_('Αdd new Crop'), crop_types=crop_types, soil_types=soil_types)
 
 
@@ -304,13 +295,7 @@ def showCrop(crop_id):
     soil_type = SoilTypeName.query.filter_by(soil_type_id=crop.soil_type, language_id=lang_id).one_or_404()
     crop_coordinates = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).order_by(CropCoordinates.id.asc()).all()
     sensors = Sensor.query.filter_by(crop_id=crop_id).order_by(Sensor.id.asc()).all()
-    #print('# sensors #')
-    #print(sensors)
     form = newCropForm()
-    #print('# len(crop_coordinates) #')
-    #print(len(crop_coordinates))
-    #print('# crop_coordinates #')
-    #print(crop_coordinates)
 
     map_html = False
 
@@ -319,15 +304,8 @@ def showCrop(crop_id):
             # Convert in tuple list (longitude, latitude)
             crop_coordinates_list = [(coord.longtitute, coord.latitude) for coord in crop_coordinates]
             coordinates = json.loads(json.dumps(crop_coordinates_list))
-            #print('# len(coords_list) #')
-            #print(len(crop_coordinates_list))
-            #print('# coords_list #')
-            #print(crop_coordinates_list)
-            #coordinates = check_coordinates(crop_coordinates_list)
-            #print('# coordinates #')
-            #print(coordinates)
+
         except Exception as e:
-            #return jsonify({"error": str(e)}), 500  
             print(str(e))
             flash(_('Exception: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'), 'warning')
 
@@ -370,8 +348,6 @@ def edit_crop(crop_id):
 
     crop = Crop.query.filter_by(id=crop_id, owner=current_user).first_or_404()
     lang_id = session.get('lang_id')
-    #prefectures = PrefectureName.query.filter_by(language_id=lang_id).order_by(PrefectureName.id.asc())
-    #areas = AreaName.query.filter_by(language_id=lang_id).order_by(AreaName.id.asc())
     crop_types = CropTypeName.query.filter_by(language_id=lang_id).order_by(CropTypeName.id.asc())
     soil_types = SoilTypeName.query.filter_by(language_id=lang_id).order_by(SoilTypeName.id.asc())
     crop_coordinates = CropCoordinates.query.filter(CropCoordinates.crop_id == crop_id).order_by(CropCoordinates.id.asc()).all()
@@ -382,7 +358,6 @@ def edit_crop(crop_id):
             # Convert in tuple list (longitude, latitude)
             crop_coordinates_list = [(coord.longtitute, coord.latitude) for coord in crop_coordinates]
             coordinates = json.loads(json.dumps(crop_coordinates_list))
-            #print(coordinates)
         except Exception as e:
             print(str(e))
             flash(_('Exception: Invalid coordinates format. Expecting a list of [latitude, longitude] pairs.'), 'warning')
@@ -410,7 +385,6 @@ def edit_crop(crop_id):
 
         # Map Data exists
         if len(form.crop_map.data) > 0:
-            #print(form.crop_map.data)
 
             # Convert String to JSON            
             try:
@@ -429,7 +403,7 @@ def edit_crop(crop_id):
                             lon, lat = transformer.transform(lon, lat)
                         new_coord = CropCoordinates(crop_id=crop.id, longtitute=lon, latitude=lat)
                         db.session.add(new_coord)
-                    #db.session.commit()
+
                 except Exception as e:
                     print(form.crop_map.data)
                     print(str(e))
@@ -446,7 +420,7 @@ def edit_crop(crop_id):
             try:
                 # Delete previous Map Data
                 CropCoordinates.query.filter(CropCoordinates.crop_id == crop.id).delete()
-                #db.session.commit()
+
             except Exception as e:
                 db.session.rollback()
                 print(str(e))

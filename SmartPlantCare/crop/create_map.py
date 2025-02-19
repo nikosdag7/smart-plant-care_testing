@@ -1,8 +1,9 @@
 import folium
-from scipy.spatial import ConvexHull
+#from scipy.spatial import ConvexHull
 from flask_babel import _
 from .create_polygon import create_polygon
-from .add_points import add_points
+#from .add_points import add_points
+
 ###############################################################################
 # Function returns a map with the convex hull polygon from the points (LON,LAT tuples)
 ###############################################################################

@@ -2,13 +2,6 @@ from .. import db
 from ..user.models import User
 from sqlalchemy import PrimaryKeyConstraint, ForeignKeyConstraint, UniqueConstraint
 from sqlalchemy.orm import relationship
-#from werkzeug.security import generate_password_hash, check_password_hash
-#from .. import login
-#from flask_login import UserMixin
-#from ..models import Todo
-
-#from SmartPlantCare import db
-#from datetime import datetime
 
 class Prefecture(db.Model):
     __tablename__ = 'prefecture'

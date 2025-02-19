@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-  <title>{{_('Account Update')}}</title>
+  {{_('Account Update')}}
 {% endblock %}
 
 {% block content%}
@@ -38,6 +38,19 @@
               {% if form.email.errors %}
               <ul class=errors>
               {% for error in form.email.errors %}
+                <li class="alert text-danger">{{ error }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.mobile.label(class="form-label") }}
+          {{ form.mobile(class="form-control", required=False) }}
+          <div id="mobileHelp" class="form-text">{{_('Please enter your mobile phone number.')}}</div>
+              {% if form.mobile.errors %}
+              <ul class=errors>
+              {% for error in form.mobile.errors %}
                 <li class="alert text-danger">{{ error }}</li>
               {% endfor %}
               </ul>

@@ -1,7 +1,5 @@
 from .. import db
-#from ..crop.models import Prefecture, Area, CropType, SoilType
 from sqlalchemy import PrimaryKeyConstraint, ForeignKeyConstraint, UniqueConstraint
-from datetime import datetime
 
 class regionBulletin(db.Model):
     __tablename__ = 'region_bulletin'

@@ -1,13 +1,7 @@
-from .. import db
-#from ..user.models import User
-from sqlalchemy import PrimaryKeyConstraint, ForeignKeyConstraint, UniqueConstraint
-#from werkzeug.security import generate_password_hash, check_password_hash
-#from .. import login
-#from flask_login import UserMixin
-#from ..models import Todo
-
-#from SmartPlantCare import db
+from sqlalchemy import PrimaryKeyConstraint, ForeignKeyConstraint
+#from sqlalchemy import UniqueConstraint
 from datetime import datetime
+from .. import db
 
 class Sensor(db.Model):
     __tablename__ = 'sensor'

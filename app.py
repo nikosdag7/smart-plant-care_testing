@@ -1,13 +1,8 @@
 from SmartPlantCare import app
 import subprocess
-#import os
 import threading
 import signal
 import sys
-
-#settings
-#result_backend = app.config.get('result_backend')
-#broker_url = app.config.get('broker_url')
 
 # Define the paths or commands for Celery worker and beat
 CELERY_WORKER_CMD = app.config['CELERY_WORKER_CMD']

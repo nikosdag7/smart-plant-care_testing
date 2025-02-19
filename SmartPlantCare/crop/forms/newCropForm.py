@@ -1,17 +1,13 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_babel import _
-from wtforms import StringField, SubmitField, BooleanField, TextAreaField, IntegerField, FloatField
-#from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError, Optional, NumberRange
-from wtforms.validators import DataRequired, Length, EqualTo, ValidationError, Optional, NumberRange
-#from SmartPlantCare.models import User
-#from flask_login import current_user
-
+from wtforms import StringField, SubmitField, TextAreaField, IntegerField, FloatField
+#from wtforms import BooleanField
+from wtforms.validators import DataRequired, Length, ValidationError, Optional, NumberRange
+#from wtforms.validators import EqualTo
 from datetime import datetime as dt
 
-
 current_year = dt.now().year
-
 
 #Custom Validation function outside the form class
 def maxImageSize(max_size=2):
