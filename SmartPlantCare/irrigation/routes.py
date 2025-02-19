@@ -84,7 +84,6 @@ def graph_example(crop_id):
         y2 = dose,
     ))
 
-<<<<<<< HEAD
     hover_tool = HoverTool(
         tooltips = [
         ('Ημερομηνία', '@x{%F}'),
@@ -104,6 +103,3 @@ def graph_example(crop_id):
     resources = CDN.render() 
 
     return render_template("graph_example.html", crop=crop, form=form, graph_data=graph_data,resources=resources,script=script,div=div)
-=======
-        return render_template("graph_example.html", crop=crop, form=form, graph_data=graph_data)
->>>>>>> b596b0a8dce8d55a27ef83c29a0125bb89e41303

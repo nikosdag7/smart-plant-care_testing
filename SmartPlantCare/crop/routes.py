@@ -33,11 +33,11 @@ import os
 
 from datetime import datetime as dt
 
-#import folium
+import folium
 import json
 from pyproj import Transformer
 #import jsonify
-#from scipy.spatial import ConvexHull
+from scipy.spatial import ConvexHull
 
 #current_year = dt.now().year
 
