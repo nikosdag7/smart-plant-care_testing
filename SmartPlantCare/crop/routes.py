@@ -283,13 +283,13 @@ def weather_readings():
     con=sqlite3.connect("C:/Users/nikos/Desktop/smart-plant-care/flask_crops_database.db", check_same_thread=False)
     df = pd.read_sql_query("SELECT * FROM monthly_weather",con)
     try:
-        result = subprocess.run(['python', 'SmartPlantCare/crop/get_weather_data.py'])
+        #result = subprocess.run(['python', 'SmartPlantCare/crop/get_weather_data.py'])
         result2 = subprocess.run(['python', 'SmartPlantCare/crop/txt_insert.py'])
         script, div = create_plots(df)
         resources = CDN.render() 
     except Exception as e:
         return render_template('404.html', error=str(e))  # Handle errors
-    return render_template("weather_readings.html", owner=current_user,result = result,result2 = result2,script = script,div = div,resources=resources)
+    return render_template("weather_readings.html", owner=current_user,result2 = result2,script = script,div = div,resources=resources)
 
 
 @crop.route("/crop/<int:crop_id>", methods=["GET"])

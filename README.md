@@ -17,11 +17,15 @@ pip install -r requirements.txt
 ### Set enviroment variables (used in SmartPlantCare/__init__.py)
 export SECRET_KEY='use_a_strong_string'<br/>
 
-For WINDOWS (VS CODE): $env:SECRET_KEY = "use_a_strong_string"
-
 export WTF_CSRF_SECRET_KEY='use_a_strong_string'<br/>
 
 For WINDOWS (VS CODE): $env:WTF_CSRF_SECRET_KEY = "use_a_strong_string"
+
+For WINDOWS (VS CODE): $env:SECRET_KEY = "use_a_strong_string"
+
+For WINDOWS (VS CODE): $env:NOTIFICATION_SENDER_EMAIL_ADDRESS= "use email address"
+
+For WINDOWS (VS CODE): $env:NOTIFICATION_EMAIL_PASSWORD='tcoi bdop qsdp orsc'
 
 export SQLALCHEMY_DATABASE_URI='use_the_database_credentials'<br/>
 

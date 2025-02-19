@@ -169,6 +169,29 @@ msgstr "Καλλιέργειες απο το χρήστη"
 msgid "Weather Readings"
 msgstr "Μετρήσεις Καιρού"
 
+#: SmartPlantCare/crop/templates/crop.html:35
+#: SmartPlantCare/irrigation/templates/graph_example.html:4
+#: SmartPlantCare/irrigation/templates/graph_example_form.html:11
+msgid "Readings graph"
+msgstr "Γράφημα μετρήσεων"
+
+
+#: SmartPlantCare/irrigation/forms/graphExample.py:9
+msgid "Readings Graph Start Date"
+msgstr "Αρχική ημερομηνία γραφήματος"
+
+#: SmartPlantCare/irrigation/forms/graphExample.py:13
+msgid "Readings Graph End Date"
+msgstr "Τελική ημερομηνία γραφήματος"
+
+#: SmartPlantCare/irrigation/templates/graph_example_form.html:19
+msgid "Please enter the start date (first day)"
+msgstr "Παρακαλώ εισάγετε την αρχική ημερομηνία (Αρχική ημέρα)"
+
+#: SmartPlantCare/irrigation/templates/graph_example_form.html:32
+msgid "Please enter the end date (last day)"
+msgstr "Παρακαλώ εισάγετε την τελική ημερομηνία (Τελευταία ημέρα)"
+
 #: SmartPlantCare/crop/templates/my_crops.html:4
 #: SmartPlantCare/crop/templates/my_crops.html:9
 msgid "My Crops"

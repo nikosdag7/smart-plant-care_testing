@@ -5,10 +5,11 @@ import pandas as pd
 from datetime import datetime
 import numpy as np
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, CustomJS # Use UISelect instead of Select
-from bokeh.models.widgets.inputs import Select
-from bokeh.layouts import column
-import json
+from bokeh.layouts import column 
+from bokeh.models import ColumnDataSource, CustomJS,HoverTool # Use UISelect instead of Select
+#from bokeh.models.widgets.inputs import Select
+#from bokeh.layouts import column
+#import json
 from bokeh.embed import components
 
 url = 'https://penteli.meteo.gr/stations/heraclion/NOAAMO.TXT'
@@ -133,17 +134,67 @@ def create_plots(df):
 
 def create_plots(df):
      df['DAY'] = pd.to_datetime(df['DAY'])
-     p = figure(title = "Θερμοκρασία", x_axis_label = "Ημερομηνία",x_axis_type = "datetime", y_axis_label = "Θερμοκρασία",width = 600, height = 350)
-     x = df['DAY']
-     y1 = df['HIGH']
-     y2 = df['MEAN_TEMP']
-     y3 = df['LOW']
-     p.line(x,y1, legend_label = "Μέγιστη Θερμοκρασία",color ='red', line_width =2)
-     p.scatter(x,y1,color = 'red')
-     p.line(x,y2, legend_label = "Μέση Θερμοκρασία",color = 'yellow', line_width =2)
-     p.scatter(x,y2,color = 'yellow')
-     p.line(x,y3, legend_label = "Χαμηλή Θερμοκρασία",color = 'blue', line_width =2)
-     p.scatter(x,y3,color = 'blue')
+
+     source = ColumnDataSource(data=dict(
+        Ημερομηνία=df['DAY'], 
+        y1=df['HIGH'],
+        y2=df['MEAN_TEMP'],
+        y3=df['LOW'],
+        y4=df['MAX_RH'],
+        y5=df['MIN_RH'],
+        y6=df['RAIN'],
+     ))
+
+
+     hover_tool = HoverTool(
+      tooltips = [
+       ('Ημερομηνία', '@Ημερομηνία{%F}'),
+       ('Μέγιστη Θερμοκρασία', '@y1{0.0}'),
+       ('Μέση Θερμοκρασία', '@y2{0.0}'),
+       ('Ελάχιστη Θερμοκρασία', '@y3{0.0}')
+     ],
+      formatters={
+           '@Ημερομηνία' : 'datetime'
+      },
+      mode = "mouse"
+    )
+
+     
+     t = figure(title = "Θερμοκρασία", x_axis_label = "Ημερομηνία",x_axis_type = "datetime", y_axis_label = "Θερμοκρασία",width = 600, height = 350)
+     t.line('Ημερομηνία','y1', legend_label = "Μέγιστη Θερμοκρασία",color ='red', line_width =2,source=source)
+     t.scatter('Ημερομηνία','y1',color = 'red',source=source)
+     t.line('Ημερομηνία','y2', legend_label = "Μέση Θερμοκρασία",color = 'yellow', line_width =2,source=source)
+     t.scatter('Ημερομηνία','y2',color = 'yellow',source=source)
+     t.line('Ημερομηνία','y3', legend_label = "Χαμηλή Θερμοκρασία",color = 'blue', line_width =2,source=source)
+     t.scatter('Ημερομηνία','y3',color = 'blue',source=source)
+     t.add_tools(hover_tool)
+
+
+
+     hover_tool1 = HoverTool(
+      tooltips = [
+       ('Ημερομηνία', '@Ημερομηνία{%F}'),
+       ('Μέγιστη Υγρασία', '@y4{0.0}%'),
+       ('Ελάχιστη Υγρασία', '@y5{0.0}%'),
+       ('Βροχή', '@y6{0.0}')
+     ],
+      formatters={
+           '@Ημερομηνία' : 'datetime'
+      },
+      mode = "mouse"
+    )
+
+     r = figure(title = "Υγρασία/Βροχή", x_axis_label = "Ημερομηνία",x_axis_type = "datetime", y_axis_label = "Υγρασία/Βροχή",width = 600, height = 350)
+     r.line('Ημερομηνία','y4', legend_label = "Μέγιστη Υγρασία(%)",color ='red', line_width =2,source=source)
+     r.scatter('Ημερομηνία','y4',color = 'red',source = source)
+     r.line('Ημερομηνία','y5', legend_label = "Ελάχιστη Υγρασία(%)",color = 'blue', line_width =2,source = source)
+     r.scatter('Ημερομηνία','y5',color = 'blue',source = source)
+     r.line('Ημερομηνία','y6', legend_label = "Βροχή(mm)",color = 'yellow', line_width =2,source=source)
+     r.scatter('Ημερομηνία','y6',color = 'yellow',source=source)
+     r.add_tools(hover_tool1)
+     
+     p = column(t,r)
+     
      script, div = components(p)
      return script, div
 

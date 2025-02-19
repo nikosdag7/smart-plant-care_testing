@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {{_('Graph Example')}}
+    {{_('Readings Graph')}}
 {% endblock title %}
 
 {% block content %}
@@ -9,15 +9,17 @@
     <h2 class="aba_header">{{_('Crop Name')}}: {{ crop.name }}</h2>
     <hr>
 
-    {% if graph_data %}
-        <hr>
-        <table border="1">
-            <th>Date</th>
-            <th>Irrigation Need</th>
-        {% for graph_data_item in graph_data %}
-          <tr><td>{{ graph_data_item.start_date.strftime('%d-%m-%Y') }}</td><td>{{ graph_data_item.irrigation_need }}</td></tr>
-        {% endfor %}
-        </table>
-    {% endif %}
+    
+    <div>
+        <link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.2.min.css" type="text/css">
+        <!-- Bokeh JavaScript -->
+        <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-3.6.2.min.js"></script>
+        
+        <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-3.6.2.min.js"
+            crossorigin="anonymous"></script>
+        
+        {{script | safe}}
+        {{div|safe}}
+    </div>
 
 {% endblock %}

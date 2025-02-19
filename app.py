@@ -44,14 +44,14 @@ def signal_handler(sig, frame):
 
 if __name__ == '__main__':
     # Register signal handlers for graceful termination
-    signal.signal(signal.SIGINT, signal_handler)  # Handle Ctrl+C
-    signal.signal(signal.SIGTERM, signal_handler)  # Handle termination signals
+    #signal.signal(signal.SIGINT, signal_handler)  # Handle Ctrl+C
+    #signal.signal(signal.SIGTERM, signal_handler)  # Handle termination signals
 
     # Start Celery worker and beat in separate threads
-    worker_thread = threading.Thread(target=start_celery_worker)
-    beat_thread = threading.Thread(target=start_celery_beat)
-    worker_thread.start()
-    beat_thread.start()
+    #worker_thread = threading.Thread(target=start_celery_worker)
+    #beat_thread = threading.Thread(target=start_celery_beat)
+    #worker_thread.start()
+    #beat_thread.start()
 
     # Start the Flask app in the main thread
     start_flask_app()
