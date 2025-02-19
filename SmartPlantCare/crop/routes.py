@@ -11,7 +11,6 @@ from .models import PrefectureName, AreaName, CropTypeName, SoilTypeName, Crop, 
 from ..user.models import User
 from ..sensor.models import Sensor
 from .. import db
-<<<<<<< HEAD
 
 import subprocess
 import os
@@ -111,12 +110,10 @@ def image_save(image, where, size):
 
     return image_filename
 
-=======
 from .create_map import create_map
 from .save_image import save_image
 from SmartPlantCare import app
 
->>>>>>> b596b0a8dce8d55a27ef83c29a0125bb89e41303
 @crop.route('/get_prefectures')
 @login_required
 def get_prefectures():
