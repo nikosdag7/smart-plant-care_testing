@@ -31,8 +31,8 @@ class SensorData(db.Model):
     )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date_time = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
-    velue = db.Column(db.Float, nullable=False)
+    value = db.Column(db.Float, nullable=False)
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), nullable=False)
-
+    processed = db.Column(db.Boolean, nullable=False, default=False)
     def __repr__(self):
         return f"{self.id}:{self.sensor_id}"

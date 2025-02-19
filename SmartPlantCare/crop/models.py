@@ -1,6 +1,7 @@
 from .. import db
 from ..user.models import User
 from sqlalchemy import PrimaryKeyConstraint, ForeignKeyConstraint, UniqueConstraint
+from sqlalchemy.orm import relationship
 #from werkzeug.security import generate_password_hash, check_password_hash
 #from .. import login
 #from flask_login import UserMixin
@@ -158,6 +159,9 @@ class Crop(db.Model):
     cropcoords = db.relationship(
         'CropCoordinates', backref='cropc', lazy=True, cascade="all, delete-orphan"
     )
+
+    # Add this relationship to connect Crop to Alert
+    alerts = relationship('Alert', back_populates='crop')
 
     def __repr__(self):
         return f"{self.id}:{self.name}:{self.crop_size}"

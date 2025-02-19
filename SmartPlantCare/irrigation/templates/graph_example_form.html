@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+	{{_('New Region Bulletin')}}
+{% endblock title %}
+
+{% block content%}
+<div class="container login-container">
+	<div class="row">
+	    <div class="col-md-6 login-form-1">
+	        <h3>{{_('Graph Example')}}</h3>
+
+			<form action="/graph_example/{{ crop.id }}" method="POST" enctype="multipart/form-data">
+				{{ form.csrf_token }}
+				<!-- Input Start Date -->
+				<div class="mb-3">
+					{{ form.start_date.label(class="form-label") }}
+					{{ form.start_date(class="form-control") }}
+					<div id="start_dateHelp" class="form-text">{{_('Please enter the start date (first day)')}}</div>
+						{% if form.start_date.errors %}
+						<ul class=errors>
+						{% for error in form.start_date.errors %}
+						  <li class="alert text-danger">{{ error }}</li>
+						{% endfor %}
+						</ul>
+					  {% endif %}
+				  </div>
+				<!-- Input End Date -->
+				  <div class="mb-3">
+					{{ form.end_date.label(class="form-label") }}
+					{{ form.end_date(class="form-control") }}
+					<div id="start_dateHelp" class="form-text">{{_('Please enter the end date (last day)')}}</div>
+						{% if form.end_date.errors %}
+						<ul class=errors>
+						{% for error in form.end_date.errors %}
+						  <li class="alert text-danger">{{ error }}</li>
+						{% endfor %}
+						</ul>
+					  {% endif %}
+				  </div>
+
+			  <div class="mb-3">
+			  	{{ form.submit(class="btn btn-primary") }}
+			  </div>
+			  
+			</form>
+
+	    </div>
+	</div>
+</div>
+{% endblock content %}
